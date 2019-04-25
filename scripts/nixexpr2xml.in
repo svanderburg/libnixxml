@@ -1,0 +1,100 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+# Shows the usage of this command to the user
+
+showUsage()
+{
+    cat <<EOF
+Usage: $0 expr_nix [OPTION]
+
+Strictly evaluates a Nix expression and converts it into a simplified XML data
+format.
+
+Options:
+      --enable-types              Enables type annotations
+      --type-attribute-name=NAME  Name of the type attribute (defaults to: type)
+      --attr-style=NAME           Attribute style ('simple' for simple,
+                                  'verbose' for verbose attribute style)
+      --root-element-name=NAME    Root element name (defaults to: expr)
+      --list-element-name=NAME    List element name (defaults to: elem)
+      --attr-element-name=NAME    Attribute element name for verbose-style
+                                  (defaults to: attr)
+      --name-attribute-name=NAME  Name attribute name (defaults to: name)
+  -h, --help                      Shows the usage of this command to the user
+EOF
+}
+
+# Parse valid argument options
+
+PARAMS=`@getopt@ -n $0 -o h -l enable-types,type-attribute-name:,attr-style:,root-element-name:,list-element-name:,attr-element-name:,name-attribute-name:,help -- "$@"`
+
+if [ $? != 0 ]
+then
+    showUsage
+    exit 1
+fi
+
+# Evaluate valid options
+
+eval set -- "$PARAMS"
+
+while [ "$1" != "--" ]
+do
+    case "$1" in
+        --enable-types)
+            enableTypesArg="--stringparam enableTypes 1"
+            ;;
+        --type-attribute-name)
+            typeAttributeNameArg="--stringparam typeAttributeName $2"
+            ;;
+        --attr-style)
+            attrStyleArg="--stringparam attrStyle $2"
+            ;;
+        --root-element-name)
+            rootElementNameArg="--stringparam rootElementName $2"
+            ;;
+        --list-element-name)
+            listElementNameArg="--stringparam listElementName $2"
+            ;;
+        --attr-element-name)
+            attrElementNameArg="--stringparam attrElementName $2"
+            ;;
+        --name-attribute-name)
+            nameAttributeNameArg="--stringparam nameAttributeName $2"
+            ;;
+        -h|--help)
+            showUsage
+            exit 0
+            ;;
+    esac
+
+    shift
+done
+
+shift
+
+# Evaluate non-options
+nixexpr="$1"
+
+# Autoconf settings
+export prefix=@prefix@
+
+# Execute operation
+
+if [ "$nixexpr" = "" ]
+then
+    echo "ERROR: A Nix expression must be specified!" >&2
+    exit 1
+fi
+
+nix-instantiate --eval-only --xml --strict "$nixexpr" | @xsltproc@ \
+  $enableTypesArg \
+  $typeAttributeNameArg \
+  $attrStyleArg \
+  $rootElementNameArg \
+  $listElementNameArg \
+  $attrElementNameArg \
+  $nameAttributeNameArg \
+  @datadir@/@PACKAGE@/nix-xml-simplifier.xsl -

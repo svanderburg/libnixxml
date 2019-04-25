@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libnixxml
+Version: @VERSION@
+Description: Nix-XML library
+Requires:
+Libs: -L${libdir}
+Cflags: -I${includedir}
