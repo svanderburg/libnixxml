@@ -225,9 +225,9 @@ static void print_attributes_xml(FILE *file, const void *value, const int indent
 
 void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec)
 {
-    fprintf(file, "<drawSpec>");
-    NixXML_print_attrset_xml(file, drawSpec, 0, NULL, print_attributes_xml, NULL);
-    fprintf(file, "</drawSpec>");
+    NixXML_print_open_root_element(file, "drawSpec");
+    NixXML_print_simple_attrset_xml(file, drawSpec, 0, NULL, print_attributes_xml, NULL);
+    NixXML_print_close_root_element(file, "drawSpec");
 }
 
 /* Draw functionality */

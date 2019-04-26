@@ -99,7 +99,7 @@ static void print_attributes_xml(FILE *file, const void *value, const int indent
 
 void print_figure_xml(FILE *file, const void *figure, const int indent_level, void *userdata)
 {
-    NixXML_print_attrset_xml(file, figure, indent_level, userdata, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, figure, indent_level, userdata, print_attributes_xml, NULL);
 }
 
 void draw_figure(const Figure *figure, gdImagePtr image, int x, int y)

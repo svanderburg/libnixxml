@@ -1,5 +1,5 @@
-#ifndef __NIXXML_OBJECT_H
-#define __NIXXML_OBJECT_H
+#ifndef __NIXXML_NODE_H
+#define __NIXXML_NODE_H
 
 typedef enum
 {
@@ -17,10 +17,10 @@ typedef struct
     NixXML_Type type;
     void *value;
 }
-NixXML_Object;
+NixXML_Node;
 
 typedef void (*NixXML_DeleteObjectFunc) (void *data);
 
-void NixXML_delete_object(NixXML_Object *obj, NixXML_DeleteObjectFunc delete_list, NixXML_DeleteObjectFunc delete_attrset);
+void NixXML_delete_node(NixXML_Node *node, NixXML_DeleteObjectFunc delete_list, NixXML_DeleteObjectFunc delete_attrset);
 
 #endif

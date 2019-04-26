@@ -2,10 +2,10 @@
 
 static void *parse_generic_value(xmlNodePtr element, NixXML_Type type, void *userdata)
 {
-    NixXML_Object *obj = (NixXML_Object*)malloc(sizeof(NixXML_Object));
-    obj->type = type;
-    obj->value = NixXML_parse_value(element, userdata);
-    return obj;
+    NixXML_Node *node = (NixXML_Node*)malloc(sizeof(NixXML_Node));
+    node->type = type;
+    node->value = NixXML_parse_value(element, userdata);
+    return node;
 }
 
 void *NixXML_parse_generic_string(xmlNodePtr element, void *userdata)
@@ -32,45 +32,45 @@ void *NixXML_create_generic_list(xmlNodePtr element, void *userdata)
 {
     NixXML_ParseExprParams *params = (NixXML_ParseExprParams*)userdata;
 
-    NixXML_Object *obj = (NixXML_Object*)malloc(sizeof(NixXML_Object));
-    obj->type = NIX_XML_TYPE_LIST;
-    obj->value = params->create_list(element, userdata);
-    return obj;
+    NixXML_Node *node = (NixXML_Node*)malloc(sizeof(NixXML_Node));
+    node->type = NIX_XML_TYPE_LIST;
+    node->value = params->create_list(element, userdata);
+    return node;
 }
 
 void *NixXML_create_generic_attrset(xmlNodePtr element, void *userdata)
 {
     NixXML_ParseExprParams *params = (NixXML_ParseExprParams*)userdata;
 
-    NixXML_Object *obj = (NixXML_Object*)malloc(sizeof(NixXML_Object));
-    obj->type = NIX_XML_TYPE_ATTRSET;
-    obj->value = params->create_table(element, userdata);
-    return obj;
+    NixXML_Node *node = (NixXML_Node*)malloc(sizeof(NixXML_Node));
+    node->type = NIX_XML_TYPE_ATTRSET;
+    node->value = params->create_table(element, userdata);
+    return node;
 }
 
 void NixXML_add_element_to_generic_list(void *list, void *value, void *userdata)
 {
     NixXML_ParseExprParams *params = (NixXML_ParseExprParams*)userdata;
 
-    NixXML_Object *obj = (NixXML_Object*)list;
-    params->add_element(obj->value, value, userdata);
+    NixXML_Node *node = (NixXML_Node*)list;
+    params->add_element(node->value, value, userdata);
 }
 
 void NixXML_insert_object_into_generic_attrset(void *table, const xmlChar *key, void *value, void *userdata)
 {
     NixXML_ParseExprParams *params = (NixXML_ParseExprParams*)userdata;
 
-    NixXML_Object *obj = (NixXML_Object*)table;
-    params->insert_object(obj->value, key, value, userdata);
+    NixXML_Node *node = (NixXML_Node*)table;
+    params->insert_object(node->value, key, value, userdata);
 }
 
 void *NixXML_finalize_generic_list(void *list, void *userdata)
 {
     NixXML_ParseExprParams *params = (NixXML_ParseExprParams*)userdata;
 
-    NixXML_Object *obj = (NixXML_Object*)list;
-    obj->value = params->finalize_list(obj->value, userdata);
-    return obj;
+    NixXML_Node *node = (NixXML_Node*)list;
+    node->value = params->finalize_list(node->value, userdata);
+    return node;
 }
 
 void *NixXML_parse_expr(xmlNodePtr element, void *userdata)
@@ -103,7 +103,7 @@ void *NixXML_parse_expr(xmlNodePtr element, void *userdata)
     }
 }
 
-NixXML_Object *NixXML_generic_parse_expr(xmlNodePtr element, const char *type_property_name, const char *name_property_name, NixXML_CreateObjectFunc create_list, NixXML_CreateObjectFunc create_table, NixXML_AddElementFunc add_element, NixXML_InsertObjectFunc insert_object, NixXML_FinalizeListFunc finalize_list)
+NixXML_Node *NixXML_generic_parse_expr(xmlNodePtr element, const char *type_property_name, const char *name_property_name, NixXML_CreateObjectFunc create_list, NixXML_CreateObjectFunc create_table, NixXML_AddElementFunc add_element, NixXML_InsertObjectFunc insert_object, NixXML_FinalizeListFunc finalize_list)
 {
     NixXML_ParseExprParams params = { type_property_name, name_property_name, create_list, create_table, add_element, insert_object, finalize_list };
     return NixXML_parse_expr(element, &params);

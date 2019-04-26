@@ -1,1 +1,1 @@
-SUBDIRS = draw prettyprint
+SUBDIRS = draw

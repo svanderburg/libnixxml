@@ -97,7 +97,7 @@ static void print_attributes_xml(FILE *file, const void *value, const int indent
 
 void print_draw_command_xml(FILE *file, const void *drawCommand, const int indent_level, void *userdata)
 {
-    NixXML_print_attrset_xml(file, drawCommand, indent_level, userdata, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, drawCommand, indent_level, userdata, print_attributes_xml, NULL);
 }
 
 void execute_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table, gdImagePtr image)

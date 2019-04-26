@@ -36,7 +36,7 @@ let
           src = tarball;
           configureFlags = [ "--with-gd" ];
           CFLAGS = "-Wall -ggdb";
-          buildInputs = [ pkgconfig libxml2 gd.dev getopt libxslt ];
+          buildInputs = [ pkgconfig libxml2 gd.dev getopt libxslt nix ];
           doCheck = true;
           dontStrip = true;
         });

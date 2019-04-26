@@ -60,7 +60,7 @@ void NixXML_print_xml_hash_table_simple_attributes_xml(FILE *file, const void *v
 
 void NixXML_print_xml_hash_table_simple_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
-    NixXML_print_attrset_xml(file, hash_table, indent_level, userdata, NixXML_print_xml_hash_table_simple_attributes_xml, print_value);
+    NixXML_print_simple_attrset_xml(file, hash_table, indent_level, userdata, NixXML_print_xml_hash_table_simple_attributes_xml, print_value);
 }
 
 /* Verbose XML printing */
@@ -82,16 +82,16 @@ static void scanner_verbose_xml(void *payload, void *data, const xmlChar *name)
     NixXML_print_verbose_attribute_xml(params->file, params->child_element_name, params->name_property_name, (const char *)name, payload, params->indent_level, params->userdata, params->print_value);
 }
 
-void NixXML_print_xml_hash_table_verbose_attributes_xml(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+void NixXML_print_xml_hash_table_verbose_attributes_xml(FILE *file, const void *value, const char *child_element_name, const char *name_property_name, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
     const xmlHashTablePtr hash_table = (const xmlHashTablePtr)value;
-    VerboseScannerParams params = { file, "elem", "name", indent_level, userdata, print_value }; // TODO: make elem, name configurable
+    VerboseScannerParams params = { file, child_element_name, name_property_name, indent_level, userdata, print_value };
     xmlHashScan(hash_table, scanner_verbose_xml, &params);
 }
 
-void NixXML_print_xml_hash_table_verbose_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+void NixXML_print_xml_hash_table_verbose_xml(FILE *file, xmlHashTablePtr hash_table, const char *child_element_name, const char *name_property_name, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
-    NixXML_print_attrset_xml(file, hash_table, indent_level, userdata, NixXML_print_xml_hash_table_verbose_attributes_xml, print_value);
+    NixXML_print_verbose_attrset_xml(file, hash_table, child_element_name, name_property_name, indent_level, userdata, NixXML_print_xml_hash_table_verbose_attributes_xml, print_value);
 }
 
 /* Parse functionality */

@@ -43,11 +43,14 @@ src/libnixxml.pc
 src/Makefile
 src/libnixxml/Makefile
 src/libnixxml-data/Makefile
+src/prettyprint/Makefile
 scripts/Makefile
 scripts/nixexpr2xml
 xsl/Makefile
 tests/Makefile
 tests/draw/Makefile
-tests/prettyprint/Makefile
+tests/draw/convert-xml.sh
+], [
+chmod +x tests/draw/convert-xml.sh
 ])
 AC_OUTPUT

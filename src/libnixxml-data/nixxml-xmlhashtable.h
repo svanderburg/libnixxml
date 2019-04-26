@@ -16,9 +16,9 @@ void NixXML_print_xml_hash_table_simple_attributes_xml(FILE *file, const void *v
 
 void NixXML_print_xml_hash_table_simple_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
 
-void NixXML_print_xml_hash_table_verbose_attributes_xml(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
+void NixXML_print_xml_hash_table_verbose_attributes_xml(FILE *file, const void *value, const char *child_element_name, const char *name_property_name, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
 
-void NixXML_print_xml_hash_table_verbose_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
+void NixXML_print_xml_hash_table_verbose_xml(FILE *file, xmlHashTablePtr hash_table, const char *child_element_name, const char *name_property_name, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
 
 void *NixXML_parse_xml_hash_table(xmlNodePtr element, void *userdata, NixXML_ParseObjectFunc parse_object);
 

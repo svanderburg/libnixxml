@@ -2,7 +2,7 @@
 #define __NIXXML_PARSE_GENERIC_H
 
 #include "nixxml-parse.h"
-#include "nixxml-object.h"
+#include "nixxml-node.h"
 
 typedef struct
 {
@@ -49,6 +49,6 @@ void *NixXML_parse_expr(xmlNodePtr element, void *userdata);
  * @param finalize_list Finalizes the list-like data structure by carrying out additional house keeping tasks
  * @return A list-like or table-like data structure, string or NULL if the data cannot be parsed.
  */
-NixXML_Object *NixXML_generic_parse_expr(xmlNodePtr element, const char *type_property_name, const char *name_property_name, NixXML_CreateObjectFunc create_list, NixXML_CreateObjectFunc create_table, NixXML_AddElementFunc add_element, NixXML_InsertObjectFunc insert_object, NixXML_FinalizeListFunc finalize_list);
+NixXML_Node *NixXML_generic_parse_expr(xmlNodePtr element, const char *type_property_name, const char *name_property_name, NixXML_CreateObjectFunc create_list, NixXML_CreateObjectFunc create_table, NixXML_AddElementFunc add_element, NixXML_InsertObjectFunc insert_object, NixXML_FinalizeListFunc finalize_list);
 
 #endif

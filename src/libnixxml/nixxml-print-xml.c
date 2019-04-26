@@ -1,5 +1,15 @@
 #include "nixxml-print-xml.h"
 
+void NixXML_print_open_root_element(FILE *file, const char *root_element_name)
+{
+    fprintf(file, "<%s>", root_element_name);
+}
+
+void NixXML_print_close_root_element(FILE *file, const char *root_element_name)
+{
+    fprintf(file, "</%s>", root_element_name);
+}
+
 void NixXML_print_string_xml(FILE *file, const void *value, const int indent_level, void *userdata)
 {
     const char *string_value = (const char*)value;
@@ -39,9 +49,9 @@ void NixXML_print_list_element_xml(FILE *file, const char *child_element_name, c
 {
     fprintf(file, "\n");
     NixXML_print_indentation(file, indent_level);
-    fprintf(file, "<%s>", child_element_name);
+    NixXML_print_open_root_element(file, child_element_name);
     print_value(file, value, indent_level, userdata);
-    fprintf(file, "</%s>", child_element_name);
+    NixXML_print_close_root_element(file, child_element_name);
 }
 
 void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, void *userdata, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintValueFunc print_value)
@@ -55,9 +65,9 @@ void NixXML_print_simple_attribute_xml(FILE *file, const char *name, const void 
 {
     fprintf(file, "\n");
     NixXML_print_indentation(file, indent_level);
-    fprintf(file, "<%s>", name);
+    NixXML_print_open_root_element(file, name);
     print_value(file, value, indent_level, userdata);
-    fprintf(file, "</%s>", name);
+    NixXML_print_close_root_element(file, name);
     NixXML_print_indentation(file, indent_level);
 }
 
@@ -73,9 +83,16 @@ void NixXML_print_verbose_attribute_xml(FILE *file, const char *child_element_na
     NixXML_print_indentation(file, indent_level);
 }
 
-void NixXML_print_attrset_xml(FILE *file, const void *table, const int indent_level, void *userdata, NixXML_PrintMembersFunc print_attributes, NixXML_PrintValueFunc print_value)
+void NixXML_print_simple_attrset_xml(FILE *file, const void *table, const int indent_level, void *userdata, NixXML_PrintMembersFunc print_attributes, NixXML_PrintValueFunc print_value)
 {
     print_attributes(file, table, indent_level + 1, userdata, print_value);
+    fprintf(file, "\n");
+    NixXML_print_indentation(file, indent_level);
+}
+
+void NixXML_print_verbose_attrset_xml(FILE *file, const void *table, const char *child_element_name, const char *name_property_name, const int indent_level, void *userdata, NixXML_PrintVerboseXMLMembersFunc print_attributes, NixXML_PrintValueFunc print_value)
+{
+    print_attributes(file, table, child_element_name, name_property_name, indent_level + 1, userdata, print_value);
     fprintf(file, "\n");
     NixXML_print_indentation(file, indent_level);
 }

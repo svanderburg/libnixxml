@@ -16,11 +16,11 @@ static void *generic_parse_expr(xmlNodePtr element)
     return NixXML_generic_parse_expr(element, "type", "name", NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
 }
 
-static NixXML_Object *open_expr(const char *filename)
+static NixXML_Node *open_expr(const char *filename)
 {
     xmlDocPtr doc;
     xmlNodePtr node_root;
-    NixXML_Object *obj;
+    NixXML_Node *node;
 
     /* Parse the XML document */
 
@@ -45,7 +45,7 @@ static NixXML_Object *open_expr(const char *filename)
     }
 
     /* Parse expression */
-    obj = generic_parse_expr(node_root);
+    node = generic_parse_expr(node_root);
 
     /* Cleanup */
     xmlFreeDoc(doc);
@@ -53,31 +53,31 @@ static NixXML_Object *open_expr(const char *filename)
     xmlCleanupParser();
 
     /* Return expression data structure */
-    return obj;
+    return node;
 }
 
-static void delete_object(NixXML_Object *obj);
+static void delete_node(NixXML_Node *node);
 
 static void delete_list(void *list)
 {
-    NixXML_delete_ptr_array(list, (NixXML_DeletePtrArrayElementFunc)delete_object);
+    NixXML_delete_ptr_array(list, (NixXML_DeletePtrArrayElementFunc)delete_node);
 }
 
 static void delete_attrset(xmlHashTablePtr hash_table);
 
-static void object_deallocator(void *payload, const xmlChar *name)
+static void node_deallocator(void *payload, const xmlChar *name)
 {
-    delete_object(payload);
+    delete_node(payload);
 }
 
 static void delete_attrset(xmlHashTablePtr hash_table)
 {
-    xmlHashFree(hash_table, object_deallocator);
+    xmlHashFree(hash_table, node_deallocator);
 }
 
-static void delete_object(NixXML_Object *obj)
+static void delete_node(NixXML_Node *node)
 {
-    NixXML_delete_object(obj, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
+    NixXML_delete_node(node, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
 }
 
 int main(int argc, char *argv[])
@@ -105,9 +105,9 @@ int main(int argc, char *argv[])
     }
     else
     {
-        NixXML_Object *obj = open_expr(config_file);
+        NixXML_Node *node = open_expr(config_file);
 
-        if(obj == NULL)
+        if(node == NULL)
         {
             fprintf(stderr, "Cannot open expression XML file!\n");
             return 1;
@@ -117,13 +117,13 @@ int main(int argc, char *argv[])
             /* Execute the desired operation */
 
             if(strcmp(output_type, "nix") == 0)
-                NixXML_print_generic_expr_nix(stdout, obj, 0, NixXML_print_ptr_array_elements_nix, NixXML_print_xml_hash_table_attributes_nix);
+                NixXML_print_generic_expr_nix(stdout, node, 0, NixXML_print_ptr_array_elements_nix, NixXML_print_xml_hash_table_attributes_nix);
             else if(strcmp(output_type, "xml") == 0)
-                NixXML_print_generic_expr_xml(stdout, obj, 0, "expr", "elem", NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_verbose_attributes_xml);
+                NixXML_print_generic_expr_verbose_xml(stdout, node, 0, "expr", "elem", "attr", "name", NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_verbose_attributes_xml);
             else if(strcmp(output_type, "simple-xml") == 0)
-                NixXML_print_generic_expr_xml(stdout, obj, 0, "expr", "elem", NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_simple_attributes_xml);
+                NixXML_print_generic_expr_simple_xml(stdout, node, 0, "expr", "elem", NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_simple_attributes_xml);
 
-            delete_object(obj);
+            delete_node(node);
             return 0;
         }
     }
