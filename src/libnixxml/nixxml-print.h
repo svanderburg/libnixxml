@@ -3,9 +3,12 @@
 
 #include <stdio.h>
 
-typedef void (*NixXML_PrintValueFunc) (FILE *file, const void *value, const int indent_level, void *userdata);
-typedef void (*NixXML_PrintMembersFunc) (FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
-
+/**
+ * Prints indentation of 2 spaces per indent level.
+ *
+ * @param file File descriptor to write to
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ */
 void NixXML_print_indentation(FILE *file, const int indent_level);
 
 #endif

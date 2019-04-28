@@ -1,16 +1,9 @@
 #include "nixxml-print-generic-nix.h"
 
-typedef struct
-{
-    NixXML_PrintMembersFunc print_list_elements;
-    NixXML_PrintMembersFunc print_attributes;
-}
-PrintExprParams;
-
 void NixXML_print_expr_nix(FILE *file, const void *value, const int indent_level, void *userdata)
 {
     NixXML_Node *node = (NixXML_Node*)value;
-    PrintExprParams *params = (PrintExprParams*)userdata;
+    NixXML_PrintExprParams *params = (NixXML_PrintExprParams*)userdata;
 
     switch(node->type)
     {
@@ -33,6 +26,8 @@ void NixXML_print_expr_nix(FILE *file, const void *value, const int indent_level
 
 void NixXML_print_generic_expr_nix(FILE *file, const NixXML_Node *value, const int indent_level, NixXML_PrintMembersFunc print_list_elements, NixXML_PrintMembersFunc print_attributes)
 {
-    PrintExprParams params = { print_list_elements, print_attributes };
-    return NixXML_print_expr_nix(file, value, indent_level, &params);
+    NixXML_PrintExprParams params;
+    params.print_list_elements = print_list_elements;
+    params.print_attributes = print_attributes;
+    NixXML_print_expr_nix(file, value, indent_level, &params);
 }

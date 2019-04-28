@@ -87,17 +87,17 @@ void print_draw_command_nix(FILE *file, const void *drawCommand, const int inden
 
 /* XML print functionality */
 
-static void print_attributes_xml(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     const DrawCommand *drawCommand = (const DrawCommand*)value;
-    NixXML_print_simple_attribute_xml(file, "figure", drawCommand->figure, indent_level, userdata, NixXML_print_string_xml);
-    NixXML_print_simple_attribute_xml(file, "x", &drawCommand->x, indent_level, userdata, NixXML_print_int_xml);
-    NixXML_print_simple_attribute_xml(file, "y", &drawCommand->y, indent_level, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "figure", drawCommand->figure, indent_level, type_property_name, userdata, NixXML_print_string_xml);
+    NixXML_print_simple_attribute_xml(file, "x", &drawCommand->x, indent_level, type_property_name, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "y", &drawCommand->y, indent_level, type_property_name, userdata, NixXML_print_int_xml);
 }
 
-void print_draw_command_xml(FILE *file, const void *drawCommand, const int indent_level, void *userdata)
+void print_draw_command_xml(FILE *file, const void *drawCommand, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_simple_attrset_xml(file, drawCommand, indent_level, userdata, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, drawCommand, indent_level, type_property_name, userdata, print_attributes_xml, NULL);
 }
 
 void execute_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table, gdImagePtr image)

@@ -1,18 +1,7 @@
 #include "nixxml-print-xml.h"
 
-void NixXML_print_open_root_element(FILE *file, const char *root_element_name)
+static void print_string_xml(FILE *file, const char *string_value)
 {
-    fprintf(file, "<%s>", root_element_name);
-}
-
-void NixXML_print_close_root_element(FILE *file, const char *root_element_name)
-{
-    fprintf(file, "</%s>", root_element_name);
-}
-
-void NixXML_print_string_xml(FILE *file, const void *value, const int indent_level, void *userdata)
-{
-    const char *string_value = (const char*)value;
     unsigned int i = 0;
 
     while(string_value[i] != '\0')
@@ -35,64 +24,110 @@ void NixXML_print_string_xml(FILE *file, const void *value, const int indent_lev
     }
 }
 
-void NixXML_print_value_xml(FILE *file, const void *value, const int indent_level, void *userdata)
+void NixXML_print_open_root_tag(FILE *file, const char *root_element_name)
 {
-    NixXML_print_string_xml(file, value, indent_level, userdata);
+    fprintf(file, "<%s", root_element_name);
 }
 
-void NixXML_print_int_xml(FILE *file, const void *value, const int indent_level, void *userdata)
+void NixXML_print_open_verbose_attr_tag(FILE *file, const char *root_element_name, const char *name_property_name, const char *name)
 {
+    fprintf(file, "<%s %s=\"", root_element_name, name_property_name);
+    print_string_xml(file, name);
+    fprintf(file, "\"");
+}
+
+void NixXML_print_close_root_tag(FILE *file, const char *root_element_name)
+{
+    fprintf(file, "</%s>", root_element_name);
+}
+
+static void print_type_suffix(FILE *file, const char *type_property_name, const char *type)
+{
+    if(type_property_name != NULL)
+        fprintf(file, " %s=\"%s\"", type_property_name, type);
+
+    fputc('>', file);
+}
+
+void NixXML_print_string_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
+{
+    print_type_suffix(file, type_property_name, "string");
+    print_string_xml(file, value);
+}
+
+void NixXML_print_string_as_int_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
+{
+    print_type_suffix(file, type_property_name, "int");
+    print_string_xml(file, value);
+}
+
+void NixXML_print_string_as_float_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
+{
+    print_type_suffix(file, type_property_name, "int");
+    print_string_xml(file, value);
+}
+
+void NixXML_print_string_as_bool_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
+{
+    print_type_suffix(file, type_property_name, "bool");
+    print_string_xml(file, value);
+}
+
+void NixXML_print_int_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
+{
+    print_type_suffix(file, type_property_name, "int");
     fprintf(file, "%d", *((int*)value));
 }
 
-void NixXML_print_list_element_xml(FILE *file, const char *child_element_name, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+void NixXML_print_list_element_xml(FILE *file, const char *child_element_name, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     fprintf(file, "\n");
     NixXML_print_indentation(file, indent_level);
-    NixXML_print_open_root_element(file, child_element_name);
-    print_value(file, value, indent_level, userdata);
-    NixXML_print_close_root_element(file, child_element_name);
+    NixXML_print_open_root_tag(file, child_element_name);
+    print_value(file, value, indent_level, type_property_name, userdata);
+    NixXML_print_close_root_tag(file, child_element_name);
 }
 
-void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, void *userdata, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintValueFunc print_value)
+void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintXMLValueFunc print_value)
 {
-    print_list_elements(file, child_element_name, list, indent_level + 1, userdata, print_value);
-    fprintf(file, "\n");
-    NixXML_print_indentation(file, indent_level);
-}
-
-void NixXML_print_simple_attribute_xml(FILE *file, const char *name, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
-{
-    fprintf(file, "\n");
-    NixXML_print_indentation(file, indent_level);
-    NixXML_print_open_root_element(file, name);
-    print_value(file, value, indent_level, userdata);
-    NixXML_print_close_root_element(file, name);
-    NixXML_print_indentation(file, indent_level);
-}
-
-void NixXML_print_verbose_attribute_xml(FILE *file, const char *child_element_name, const char *name_property_name, const char *name, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
-{
-    fprintf(file, "\n");
-    NixXML_print_indentation(file, indent_level);
-    fprintf(file, "<%s %s=\"", child_element_name, name_property_name);
-    NixXML_print_string_xml(file, name, indent_level, userdata);
-    fprintf(file, "\">");
-    print_value(file, value, indent_level, userdata);
-    fprintf(file, "</%s>", child_element_name);
-    NixXML_print_indentation(file, indent_level);
-}
-
-void NixXML_print_simple_attrset_xml(FILE *file, const void *table, const int indent_level, void *userdata, NixXML_PrintMembersFunc print_attributes, NixXML_PrintValueFunc print_value)
-{
-    print_attributes(file, table, indent_level + 1, userdata, print_value);
+    print_type_suffix(file, type_property_name, "list");
+    print_list_elements(file, child_element_name, list, indent_level >= 0 ? indent_level + 1 : indent_level, type_property_name, userdata, print_value);
     fprintf(file, "\n");
     NixXML_print_indentation(file, indent_level);
 }
 
-void NixXML_print_verbose_attrset_xml(FILE *file, const void *table, const char *child_element_name, const char *name_property_name, const int indent_level, void *userdata, NixXML_PrintVerboseXMLMembersFunc print_attributes, NixXML_PrintValueFunc print_value)
+void NixXML_print_simple_attribute_xml(FILE *file, const char *name, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
-    print_attributes(file, table, child_element_name, name_property_name, indent_level + 1, userdata, print_value);
+    fprintf(file, "\n");
+    NixXML_print_indentation(file, indent_level);
+    NixXML_print_open_root_tag(file, name);
+    print_value(file, value, indent_level, type_property_name, userdata);
+    NixXML_print_close_root_tag(file, name);
+    NixXML_print_indentation(file, indent_level);
+}
+
+void NixXML_print_verbose_attribute_xml(FILE *file, const char *child_element_name, const char *name_property_name, const char *name, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
+{
+    fprintf(file, "\n");
+    NixXML_print_indentation(file, indent_level);
+    NixXML_print_open_verbose_attr_tag(file, child_element_name, name_property_name, name);
+    print_value(file, value, indent_level, type_property_name, userdata);
+    NixXML_print_close_root_tag(file, child_element_name);
+    NixXML_print_indentation(file, indent_level);
+}
+
+void NixXML_print_simple_attrset_xml(FILE *file, const void *table, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintSimpleXMLMembersFunc print_attributes, NixXML_PrintXMLValueFunc print_value)
+{
+    print_type_suffix(file, type_property_name, "attrs");
+    print_attributes(file, table, indent_level >= 0 ? indent_level + 1 : indent_level, type_property_name, userdata, print_value);
+    fprintf(file, "\n");
+    NixXML_print_indentation(file, indent_level);
+}
+
+void NixXML_print_verbose_attrset_xml(FILE *file, const void *table, const char *child_element_name, const char *name_property_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintVerboseXMLMembersFunc print_attributes, NixXML_PrintXMLValueFunc print_value)
+{
+    print_type_suffix(file, type_property_name, "attrs");
+    print_attributes(file, table, child_element_name, name_property_name, indent_level >= 0 ? indent_level + 1 : indent_level, type_property_name, userdata, print_value);
     fprintf(file, "\n");
     NixXML_print_indentation(file, indent_level);
 }

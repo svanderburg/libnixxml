@@ -193,41 +193,41 @@ void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec)
 
 /* Print XML functionality */
 
-static void print_figure_table_xml(FILE *file, const void *value, const int indent_level, void *userdata)
+static void print_figure_table_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, userdata, print_figure_xml);
+    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, type_property_name, userdata, print_figure_xml);
 }
 
-static void print_draw_list_xml(FILE *file, const void *value, const int indent_level, void *userdata)
+static void print_draw_list_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, userdata, print_draw_command_xml);
+    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, type_property_name, userdata, print_draw_command_xml);
 }
 
-static void print_meta_table_xml(FILE *file, const void *value, const int indent_level, void *userdata)
+static void print_meta_table_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, userdata, NixXML_print_string_xml);
+    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, type_property_name, userdata, NixXML_print_string_xml);
 }
 
-static void print_tags_list_xml(FILE *file, const void *value, const int indent_level, void *userdata)
+static void print_tags_list_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, userdata, NixXML_print_string_xml);
+    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, type_property_name, userdata, NixXML_print_string_xml);
 }
 
-static void print_attributes_xml(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     DrawSpec *drawSpec = (DrawSpec*)value;
-    NixXML_print_simple_attribute_xml(file, "dimensions", drawSpec->dimensions, indent_level, userdata, print_dimensions_xml);
-    NixXML_print_simple_attribute_xml(file, "figures", drawSpec->figures, indent_level, userdata, print_figure_table_xml);
-    NixXML_print_simple_attribute_xml(file, "draw", drawSpec->draw, indent_level, userdata, print_draw_list_xml);
-    NixXML_print_simple_attribute_xml(file, "meta", drawSpec->meta, indent_level, userdata, print_meta_table_xml);
-    NixXML_print_simple_attribute_xml(file, "tags", drawSpec->tags, indent_level, userdata, print_tags_list_xml);
+    NixXML_print_simple_attribute_xml(file, "dimensions", drawSpec->dimensions, indent_level, type_property_name, userdata, print_dimensions_xml);
+    NixXML_print_simple_attribute_xml(file, "figures", drawSpec->figures, indent_level, type_property_name, userdata, print_figure_table_xml);
+    NixXML_print_simple_attribute_xml(file, "draw", drawSpec->draw, indent_level, type_property_name, userdata, print_draw_list_xml);
+    NixXML_print_simple_attribute_xml(file, "meta", drawSpec->meta, indent_level, type_property_name, userdata, print_meta_table_xml);
+    NixXML_print_simple_attribute_xml(file, "tags", drawSpec->tags, indent_level, type_property_name, userdata, print_tags_list_xml);
 }
 
 void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec)
 {
-    NixXML_print_open_root_element(file, "drawSpec");
-    NixXML_print_simple_attrset_xml(file, drawSpec, 0, NULL, print_attributes_xml, NULL);
-    NixXML_print_close_root_element(file, "drawSpec");
+    NixXML_print_open_root_tag(file, "drawSpec");
+    NixXML_print_simple_attrset_xml(file, drawSpec, 0, NULL, NULL, print_attributes_xml, NULL);
+    NixXML_print_close_root_tag(file, "drawSpec");
 }
 
 /* Draw functionality */

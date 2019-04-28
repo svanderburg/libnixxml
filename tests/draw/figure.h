@@ -22,7 +22,7 @@ int check_figure(const Figure *figure);
 
 void print_figure_nix(FILE *file, const void *figure, const int indent_level, void *userdata);
 
-void print_figure_xml(FILE *file, const void *figure, const int indent_level, void *userdata);
+void print_figure_xml(FILE *file, const void *figure, const int indent_level, const char *type_property_name, void *userdata);
 
 void draw_figure(const Figure *figure, gdImagePtr image, int x, int y);
 

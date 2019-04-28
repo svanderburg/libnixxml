@@ -88,18 +88,18 @@ void print_figure_nix(FILE *file, const void *figure, const int indent_level, vo
     NixXML_print_attrset_nix(file, figure, indent_level, userdata, print_attributes_nix, NULL);
 }
 
-static void print_attributes_xml(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_attribute_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     const Figure *figure = (const Figure*)value;
-    NixXML_print_simple_attribute_xml(file, "type", figure->type, indent_level, userdata, NixXML_print_string_xml);
-    NixXML_print_simple_attribute_xml(file, "width", &figure->width, indent_level, userdata, NixXML_print_int_xml);
-    NixXML_print_simple_attribute_xml(file, "height", &figure->height, indent_level, userdata, NixXML_print_int_xml);
-    NixXML_print_simple_attribute_xml(file, "radius", &figure->radius, indent_level, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "type", figure->type, indent_level, type_attribute_name, userdata, NixXML_print_string_xml);
+    NixXML_print_simple_attribute_xml(file, "width", &figure->width, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "height", &figure->height, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "radius", &figure->radius, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
 }
 
-void print_figure_xml(FILE *file, const void *figure, const int indent_level, void *userdata)
+void print_figure_xml(FILE *file, const void *figure, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_simple_attrset_xml(file, figure, indent_level, userdata, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, figure, indent_level, type_property_name, userdata, print_attributes_xml, NULL);
 }
 
 void draw_figure(const Figure *figure, gdImagePtr image, int x, int y)

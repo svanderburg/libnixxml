@@ -11,7 +11,7 @@ typedef void *(*NixXML_FinalizeListFunc) (void *list, void *userdata);
 typedef void (*NixXML_ParseAndInsertObjectFunc) (xmlNodePtr element, void *table, const xmlChar *key, void *userdata);
 
 /**
- * Searches for a element property with a provided name.
+ * Searches for an element property with a provided name.
  *
  * @param element XML element to parse.
  * @param property_name Name of the property to search for
@@ -23,6 +23,7 @@ xmlChar *NixXML_find_property(xmlNodePtr element, const char *property_name);
  * Parses a value, e.g. a string, float, int or bool.
  *
  * @param element XML element to parse.
+ * @param userdata Arbitrary user data that is propagated to all parse functions
  * @return A string representation of the value or NULL if it cannot be parsed. The caller needs to be free up the memory with xmlFree()
  */
 void *NixXML_parse_value(xmlNodePtr element, void *userdata);
@@ -32,39 +33,76 @@ void *NixXML_parse_value(xmlNodePtr element, void *userdata);
  *
  * @param element XML element to parse.
  * @param child_element_name Name of the child XML elements in the list or NULL to accept any sub element as a list element.
- * @param add_element Function that adds an element to the list-like data structure
- * @param parse_object Function that parses the value of the list element
- * @param finalize_list Finalizes the list-like data structure by carrying out additional house keeping tasks
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ * @param create_list Pointer to a function that constructs a list-like data structure
+ * @param add_element Pointer to a function that adds an element to the list-like data structure
+ * @param parse_object Pointer to a function that parses the value
+ * @param finalize_list Pointer to a function that finalizes the list-like data structure by carrying out additional house keeping tasks
  * @return A list-like data structure
  */
 void *NixXML_parse_list(xmlNodePtr element, const char *child_element_name, void *userdata, NixXML_CreateObjectFunc create_list, NixXML_AddElementFunc add_element, NixXML_ParseObjectFunc parse_object, NixXML_FinalizeListFunc finalize_list);
 
+/**
+ * Parses a heterogeneous table-like data structure using a simple XML notation
+ * in which every sub element name represents a key and every content text the
+ * value. Every element is parsed and inserted in one go. This function is
+ * particularly useful to parse data for creating structs or classes.
+ *
+ * @param element XML element to parse.
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ * @param create_table Pointer to a function that constructs a table-like data structure
+ * @param parse_and_insert_object Pointer to a function that parses the value and inserts it into the the table-like data structure in one go
+ * @return A table-like data structure
+ */
 void *NixXML_parse_simple_heterogeneous_attrset(xmlNodePtr element, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseAndInsertObjectFunc parse_and_insert_object);
 
 /**
  * Parses a table-like data structure using a simple XML notation in which every
- * sub element name represents a key and every content text the value.
+ * sub element name represents a key and every content text the value. Every
+ * element is parsed according to a strategy and inserted into the table-like
+ * data structure according to a strategy. This function is particularly useful
+ * to parse data for creating generic data structures, such as a hash table or
+ * map.
  *
  * @param element XML element to parse.
- * @param create_table Function that constructs a table-like data structure
- * @param parse_object Function that parses the value of the list element
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ * @param create_table Pointer to a function that constructs a table-like data structure
+ * @param parse_object Pointer to a function that parses the value
+ * @param insert_object Pointer to a function that inserts the value into the table-like data structure
  * @return A table-like data structure
  */
 void *NixXML_parse_simple_attrset(xmlNodePtr element, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseObjectFunc parse_object, NixXML_InsertObjectFunc insert_object);
 
-void *NixXML_parse_verbose_heterogeneous_attrset(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseAndInsertObjectFunc parse_and_insert_object);
-
 /**
- * Parses a table-like data structure using a verbose XML notation in which every
- * sub element is annotated with a name attribute and every contect text the
- * value.
+ * Parses a table-like data structure using a simple XML notation in which every
+ * sub element name represents a key and every content text the value. Every
+ * element is parsed and inserted in one go. This function is particularly
+ * useful to parse data for creating structs or classes.
  *
  * @param element XML element to parse.
  * @param child_element_name Name of the child XML elements in the attribute set or NULL to accept any sub element as an entry.
  * @param name_property_name Name of the attribute that refers to the name of attribute
- * @param create_table Function that constructs a table-like data structure
- * @param parse_object Function that parses the value of the list element
- * @param insert_object Function that inserts an object into the table-like data structure
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ * @param create_table Pointer to a function that constructs a table-like data structure
+ * @param parse_and_insert_object Pointer to a function that parses the value and inserts it into the the table-like data structure in one go
+ */
+void *NixXML_parse_verbose_heterogeneous_attrset(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseAndInsertObjectFunc parse_and_insert_object);
+
+/**
+ * Parses a table-like data structure using a verbose XML notation in which every
+ * sub element is annotated with a name attribute and the content text the value.
+ * Every element is parsed according to a strategy and inserted into the
+ * table-like data structure according to a strategy. This function is
+ * particularly useful to parse data for creating generic data structures, such
+ * as a hash table or map.
+ *
+ * @param element XML element to parse.
+ * @param child_element_name Name of the child XML elements in the attribute set or NULL to accept any sub element as an entry.
+ * @param name_property_name Name of the attribute that refers to the name of attribute
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ * @param create_table Pointer to a function that constructs a table-like data structure
+ * @param parse_object Pointer to a function that parses the value of the list element
+ * @param insert_object Pointer to a function that inserts an object into the table-like data structure
  * @return A table-like data structure
  */
 void *NixXML_parse_verbose_attrset(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseObjectFunc parse_object, NixXML_InsertObjectFunc insert_object);

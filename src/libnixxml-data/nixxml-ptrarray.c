@@ -1,7 +1,5 @@
 #include "nixxml-ptrarray.h"
 #include <stdlib.h>
-#include "nixxml-print-nix.h"
-#include "nixxml-print-xml.h"
 
 typedef struct
 {
@@ -75,21 +73,21 @@ void NixXML_print_ptr_array_nix(FILE *file, const void **array, const int indent
     NixXML_print_list_nix(file, array, indent_level, userdata, NixXML_print_ptr_array_elements_nix, print_value);
 }
 
-void NixXML_print_ptr_array_elements_xml(FILE *file, const char *child_element_name, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+void NixXML_print_ptr_array_elements_xml(FILE *file, const char *child_element_name, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     const void **array = (const void**)value;
     unsigned int i = 0;
 
     while(array[i] != NULL)
     {
-        NixXML_print_list_element_xml(file, child_element_name, array[i], indent_level, userdata, print_value);
+        NixXML_print_list_element_xml(file, child_element_name, array[i], indent_level, type_property_name, userdata, print_value);
         i++;
     }
 }
 
-void NixXML_print_ptr_array_xml(FILE *file, const void **array, const char *child_element_name, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+void NixXML_print_ptr_array_xml(FILE *file, const void **array, const char *child_element_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
-    NixXML_print_list_xml(file, array, child_element_name, indent_level, userdata, NixXML_print_ptr_array_elements_xml, print_value);
+    NixXML_print_list_xml(file, array, child_element_name, indent_level, type_property_name, userdata, NixXML_print_ptr_array_elements_xml, print_value);
 }
 
 void *NixXML_parse_ptr_array(xmlNodePtr element, const char *child_element_name, void *userdata, NixXML_ParseObjectFunc parse_object)

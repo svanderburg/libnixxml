@@ -1,6 +1,9 @@
 #ifndef __NIXXML_NODE_H
 #define __NIXXML_NODE_H
 
+/**
+ * @brief An enumeration of possible types for Nix nodes
+ */
 typedef enum
 {
     NIX_XML_TYPE_STRING,
@@ -12,6 +15,9 @@ typedef enum
 }
 NixXML_Type;
 
+/**
+ * @brief Captures the properties of an AST node
+ */
 typedef struct
 {
     NixXML_Type type;

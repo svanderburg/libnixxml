@@ -46,10 +46,16 @@ void *NixXML_parse_list(xmlNodePtr element, const char *child_element_name, void
 
 typedef void (*ProcessValueFunc) (xmlNodePtr child_element, void *table, const xmlChar *key, void *paramsdata, void *userdata);
 
+typedef struct
+{
+    NixXML_ParseAndInsertObjectFunc parse_and_insert_object;
+}
+ParseAndInsertSingleFunctionParam;
+
 static void execute_parse_and_insert(xmlNodePtr child_element, void *table, const xmlChar *key, void *paramsdata, void *userdata)
 {
-    NixXML_ParseAndInsertObjectFunc parse_and_insert_object = (NixXML_ParseAndInsertObjectFunc)paramsdata;
-    parse_and_insert_object(child_element, table, key, userdata);
+    ParseAndInsertSingleFunctionParam *params = (ParseAndInsertSingleFunctionParam*)paramsdata;
+    params->parse_and_insert_object(child_element, table, key, userdata);
 }
 
 typedef struct
@@ -57,11 +63,11 @@ typedef struct
     NixXML_ParseObjectFunc parse_object;
     NixXML_InsertObjectFunc insert_object;
 }
-ParseAndInsertParams;
+ParseAndInsertFunctionsParams;
 
 static void execute_parse_and_insert_functions(xmlNodePtr child_element, void *table, const xmlChar *key, void *paramsdata, void *userdata)
 {
-    ParseAndInsertParams *params = (ParseAndInsertParams*)paramsdata;
+    ParseAndInsertFunctionsParams *params = (ParseAndInsertFunctionsParams*)paramsdata;
     void *value = params->parse_object(child_element, userdata);
     params->insert_object(table, key, value, userdata);
 }
@@ -84,12 +90,16 @@ static void *parse_simple_attrset(xmlNodePtr element, NixXML_CreateObjectFunc cr
 
 void *NixXML_parse_simple_heterogeneous_attrset(xmlNodePtr element, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseAndInsertObjectFunc parse_and_insert_object)
 {
-    return parse_simple_attrset(element, create_table, execute_parse_and_insert, parse_and_insert_object, userdata);
+    ParseAndInsertSingleFunctionParam params;
+    params.parse_and_insert_object = parse_and_insert_object;
+    return parse_simple_attrset(element, create_table, execute_parse_and_insert, &params, userdata);
 }
 
 void *NixXML_parse_simple_attrset(xmlNodePtr element, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseObjectFunc parse_object, NixXML_InsertObjectFunc insert_object)
 {
-    ParseAndInsertParams params = { parse_object, insert_object };
+    ParseAndInsertFunctionsParams params;
+    params.parse_object = parse_object;
+    params.insert_object = insert_object;
     return parse_simple_attrset(element, create_table, execute_parse_and_insert_functions, &params, userdata);
 }
 
@@ -116,11 +126,15 @@ static void *parse_verbose_attrset(xmlNodePtr element, const char *child_element
 
 void *NixXML_parse_verbose_heterogeneous_attrset(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseAndInsertObjectFunc parse_and_insert_object)
 {
-    return parse_verbose_attrset(element, child_element_name, name_property_name, create_table, execute_parse_and_insert, parse_and_insert_object, userdata);
+    ParseAndInsertSingleFunctionParam params;
+    params.parse_and_insert_object = parse_and_insert_object;
+    return parse_verbose_attrset(element, child_element_name, name_property_name, create_table, execute_parse_and_insert, &params, userdata);
 }
 
 void *NixXML_parse_verbose_attrset(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_CreateObjectFunc create_table, NixXML_ParseObjectFunc parse_object, NixXML_InsertObjectFunc insert_object)
 {
-    ParseAndInsertParams params = { parse_object, insert_object };
+    ParseAndInsertFunctionsParams params;
+    params.parse_object = parse_object;
+    params.insert_object = insert_object;
     return parse_verbose_attrset(element, child_element_name, name_property_name, create_table, execute_parse_and_insert_functions, &params, userdata);
 }

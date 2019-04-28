@@ -52,7 +52,7 @@ void NixXML_print_list_element_nix(FILE *file, const void *value, const int inde
 void NixXML_print_list_nix(FILE *file, const void *list, const int indent_level, void *userdata, NixXML_PrintMembersFunc print_list_elements, NixXML_PrintValueFunc print_value)
 {
     fprintf(file, "[\n");
-    print_list_elements(file, list, indent_level + 1, userdata, print_value);
+    print_list_elements(file, list, indent_level >= 0 ? indent_level + 1 : indent_level, userdata, print_value);
     NixXML_print_indentation(file, indent_level);
     fprintf(file, "]");
 }
@@ -69,7 +69,7 @@ void NixXML_print_attribute_nix(FILE *file, const char *name, const void *value,
 void NixXML_print_attrset_nix(FILE *file, const void *table, const int indent_level, void *userdata, NixXML_PrintMembersFunc print_attributes, NixXML_PrintValueFunc print_value)
 {
     fprintf(file, "{\n");
-    print_attributes(file, table, indent_level + 1, userdata, print_value);
+    print_attributes(file, table, indent_level >= 0 ? indent_level + 1 : indent_level, userdata, print_value);
     NixXML_print_indentation(file, indent_level);
     fprintf(file, "}");
 }

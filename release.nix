@@ -16,7 +16,7 @@ let
         version = builtins.readFile ./version;
         src = libnixxml;
         inherit officialRelease;
-        CFLAGS = "-Wall";
+        CFLAGS = "-Wall -ansi -pedantic";
         buildInputs = [ doxygen pkgconfig libxml2 gd.dev getopt libxslt ];
 
         preDist = ''
@@ -35,7 +35,7 @@ let
           name = "libnixxml";
           src = tarball;
           configureFlags = [ "--with-gd" ];
-          CFLAGS = "-Wall -ggdb";
+          CFLAGS = "-Wall -ansi -pedantic -ggdb";
           buildInputs = [ pkgconfig libxml2 gd.dev getopt libxslt nix ];
           doCheck = true;
           dontStrip = true;

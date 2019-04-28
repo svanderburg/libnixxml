@@ -1,15 +1,10 @@
-#include <stdio.h>
-#include <string.h>
+#include "pretty-print.h"
+
 #include "nixxml-parse-generic.h"
 #include "nixxml-print-generic-nix.h"
 #include "nixxml-print-generic-xml.h"
 #include "nixxml-ptrarray.h"
 #include "nixxml-xmlhashtable.h"
-
-static void print_usage(const char *command)
-{
-    printf("Usage: %s OUTPUT_TYPE CONFIG_XML\n", command);
-}
 
 static void *generic_parse_expr(xmlNodePtr element)
 {
@@ -80,51 +75,36 @@ static void delete_node(NixXML_Node *node)
     NixXML_delete_node(node, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
 }
 
-int main(int argc, char *argv[])
+int pretty_print_file(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name)
 {
-    /* Parse command-line parameters */
+    NixXML_Node *node = open_expr(config_file);
 
-    char *output_type;
-    char *config_file;
-
-    if(argc > 1)
-        output_type = argv[1];
-    else
-        output_type = NULL;
-
-    if(argc > 2)
-        config_file = argv[2];
-    else
-        config_file = NULL;
-
-    if(output_type == NULL || config_file == NULL)
+    if(node == NULL)
     {
-        fprintf(stderr, "Not all mandatory input parameters provided!\n");
-        print_usage(argv[0]);
+        fprintf(stderr, "Cannot open expression XML file!\n");
         return 1;
     }
     else
     {
-        NixXML_Node *node = open_expr(config_file);
+        /* Execute the desired operation */
 
-        if(node == NULL)
+        switch(format)
         {
-            fprintf(stderr, "Cannot open expression XML file!\n");
-            return 1;
+            case FORMAT_NIX:
+                NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_ptr_array_elements_nix, NixXML_print_xml_hash_table_attributes_nix);
+                break;
+                ;;
+            case FORMAT_VERBOSE_XML:
+                NixXML_print_generic_expr_verbose_xml(stdout, node, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_verbose_attributes_xml);
+                break;
+                ;;
+            case FORMAT_SIMPLE_XML:
+                NixXML_print_generic_expr_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name, NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_simple_attributes_xml);
+                break;
+                ;;
         }
-        else
-        {
-            /* Execute the desired operation */
 
-            if(strcmp(output_type, "nix") == 0)
-                NixXML_print_generic_expr_nix(stdout, node, 0, NixXML_print_ptr_array_elements_nix, NixXML_print_xml_hash_table_attributes_nix);
-            else if(strcmp(output_type, "xml") == 0)
-                NixXML_print_generic_expr_verbose_xml(stdout, node, 0, "expr", "elem", "attr", "name", NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_verbose_attributes_xml);
-            else if(strcmp(output_type, "simple-xml") == 0)
-                NixXML_print_generic_expr_simple_xml(stdout, node, 0, "expr", "elem", NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_simple_attributes_xml);
-
-            delete_node(node);
-            return 0;
-        }
+        delete_node(node);
+        return 0;
     }
 }

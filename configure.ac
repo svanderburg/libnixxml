@@ -43,7 +43,7 @@ src/libnixxml.pc
 src/Makefile
 src/libnixxml/Makefile
 src/libnixxml-data/Makefile
-src/prettyprint/Makefile
+src/nixxml-pp/Makefile
 scripts/Makefile
 scripts/nixexpr2xml
 xsl/Makefile

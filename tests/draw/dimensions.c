@@ -64,21 +64,21 @@ void print_dimensions_nix(FILE *file, const void *figure, const int indent_level
     NixXML_print_attrset_nix(file, figure, indent_level, userdata, print_attributes_nix, NULL);
 }
 
-static void print_attributes_xml(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_attribute_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     const Dimensions *dimensions = (const Dimensions*)value;
-    NixXML_print_simple_attribute_xml(file, "width", &dimensions->width, indent_level, userdata, NixXML_print_int_xml);
-    NixXML_print_simple_attribute_xml(file, "height", &dimensions->height, indent_level, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "width", &dimensions->width, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
+    NixXML_print_simple_attribute_xml(file, "height", &dimensions->height, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
 }
 
-void print_dimensions_xml(FILE *file, const void *figure, const int indent_level, void *userdata)
+void print_dimensions_xml(FILE *file, const void *figure, const int indent_level, const char *type_attribute_name, void *userdata)
 {
-    NixXML_print_simple_attrset_xml(file, figure, indent_level, userdata, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, figure, indent_level, type_attribute_name, userdata, print_attributes_xml, NULL);
 }
 
 gdImagePtr allocate_image_with_dimensions(const Dimensions *dimensions)
 {
     gdImagePtr image = gdImageCreate(dimensions->width, dimensions->height);
-    gdImageColorAllocate(image, 0, 0, 0); // Set background color to black
+    gdImageColorAllocate(image, 0, 0, 0); /* Set background color to black */
     return image;
 }

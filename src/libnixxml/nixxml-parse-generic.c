@@ -105,6 +105,13 @@ void *NixXML_parse_expr(xmlNodePtr element, void *userdata)
 
 NixXML_Node *NixXML_generic_parse_expr(xmlNodePtr element, const char *type_property_name, const char *name_property_name, NixXML_CreateObjectFunc create_list, NixXML_CreateObjectFunc create_table, NixXML_AddElementFunc add_element, NixXML_InsertObjectFunc insert_object, NixXML_FinalizeListFunc finalize_list)
 {
-    NixXML_ParseExprParams params = { type_property_name, name_property_name, create_list, create_table, add_element, insert_object, finalize_list };
+    NixXML_ParseExprParams params;
+    params.type_property_name = type_property_name;
+    params.name_property_name = name_property_name;
+    params.create_list = create_list;
+    params.create_table = create_table;
+    params.add_element = add_element;
+    params.insert_object = insert_object;
+    params.finalize_list = finalize_list;
     return NixXML_parse_expr(element, &params);
 }

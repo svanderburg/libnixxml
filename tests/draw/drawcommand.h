@@ -20,7 +20,7 @@ int check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_t
 
 void print_draw_command_nix(FILE *file, const void *drawCommand, const int indent_level, void *userdata);
 
-void print_draw_command_xml(FILE *file, const void *drawCommand, const int indent_level, void *userdata);
+void print_draw_command_xml(FILE *file, const void *drawCommand, const int indent_level, const char *type_property_name, void *userdata);
 
 void execute_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table, gdImagePtr image);
 
