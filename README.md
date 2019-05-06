@@ -10,7 +10,7 @@ printing XML data that follows a so-called `NixXML` convention.
   [Nix package manager](http://nixos.org/nix).
 * `NixXML` can be conveniently converted from and into Nix expressions.
 * It can also be of practical use to handle XML input data even when it is not
-  desired to use Nix, e.g. as a simple infrastructure to construct a domain model
+  desired to use Nix, e.g. as a simple infrastructure to construct domain models
   from an XML configuration and writing an XML representation of a domain model
   to disk or the standard output.
 
@@ -61,7 +61,7 @@ purposes, such as:
 A configuration defined in the Nix expression language typically translates to
 data that can be consumed by tools that carry out deployment steps, such as build
 tools. For most tools, this can be done by translating parameters to environment
-variables that are exposed in the build environment.
+variables that are exposed to the build environment.
 
 Propagating complex parameters or configurations from a Nix expression is not
 always convenient, e.g. when a tool requires an XML configuration as an input
@@ -72,8 +72,8 @@ functions that can export (sub)expressions to other formats: `builtins.toXML`,
 `builtins.toJSON`. Nix can also import JSON (`builtins.fromJSON`) and TOML
 (`builtins.fromTOML`).
 
-Nix's XML representation is basically just a serialization of the abstract syntax
-tree. For example, the following Nix expression:
+Nix's XML export function basically exposes an XML serialization of an abstract
+syntax tree. For example, the following Nix expression:
 
 ```nix
 {
@@ -130,10 +130,10 @@ attribute set is translated to a collection of XML
 sub elements in which the element names correspond to the attribute keys.
 The list elements are translated to generic sub elements.
 
-Attribute keys may contains characters making certain element names invalid
-(e.g. `<` or `>`). It is also possible to use a slightly more verbose notation
-in which a generic element name is used and the `name` attribute is used for the
-attribute set key:
+Attribute keys may be identifiers, but can also be strings containing characters
+that invalidate certain XML element names (e.g. `<` or `>`). It is also possible
+to use a slightly more verbose notation in which a generic element name is used
+and the `name` attribute is used for each attribute set key:
 
 ```xml
 <?xml version="1.0"?>
@@ -169,8 +169,8 @@ The alternative XML representations are easier to read and easier to parse by a
 general purpose application. It can also easily be converted back into a Nix
 representation.
 
-In addition to generate NixXML data, this package provides functionality to
-conveniently parse that XML data to construct a domain model and to print XML
+In addition to generating `NixXML` data, this package provides functionality to
+conveniently parse `NixXML` data to construct a domain model and to print XML
 and Nix representations of an application domain model.
 
 Overview
@@ -184,8 +184,8 @@ list           | `[ "hello" "bye" ]`           | `<elem>hello</elem><elem>bye</e
 attribute set  | `{ a = "hello"; b = "bye"; }` | `<a>hello</a><b>bye</b>`                            | `xmlHashTablePtr`, `struct`, ...
 attribute set  | `{ a = "hello"; b = "bye"; }` | `<attr name="a">hello</a><attr name="b">bye</attr>` | `xmlHashTablePtr`, `struct`, ...
 
-The above table shows the concepts that the `NixXML` defines, and how they are
-represented in the Nix expression language, XML and in a domain model of a C
+The above table shows the concepts that the `NixXML` defines, and how they can
+be represented in the Nix expression language, XML and in a domain model of a C
 application.
 
 The representations of these concepts can be translated as follows:
@@ -200,11 +200,11 @@ The representations of these concepts can be translated as follows:
 * Domain model elements can be printed in the Nix expression language by
   invoking `NixXML_print_*_nix` functions.
 
-Since the C programming language has no standardized data structures (e.g. to represent
-lists or sets), the core library only provides an infrastructure to make parsing and
-printing possible. The functions provide generic interfaces allowing the
-infrastructure to work with a variety of data structures. Providing data
-structure support is the responsibility of the user.
+Since the C programming language has no standardized data structures (e.g. to
+represent lists or sets), the core library only provides an infrastructure to
+make parsing and printing possible. The functions provide generic interfaces
+allowing the infrastructure to work with a variety of data structures. Providing
+data structure support is the responsibility of the user.
 
 To demonstrate a possible data structure implementation, this package provides a
 library called `libnixxml-data` that serves as an example to show how to
@@ -213,38 +213,324 @@ represent lists as pointer arrays (`void**`) and attribute sets as hash tables
 
 By using generic data structures and type annotated XML data, it is also
 possible to *generically* parse and print a `NixXML` file with nested arbitrary
-data structures by using `NixXML_parse_generic_*` and `NixXML_print_generic_*
+data structures by using `NixXML_parse_generic_*` and `NixXML_print_generic_*`
 functions.
 
 Usage
 =====
 The libraries in this package support a variety of use cases.
 
-- You must somehow open a XML using libxml2, and obtain the root XML element that you want to use as a basis
+Manually parsing NixXML documents
+---------------------------------
+The API has convenience functions to parse sections of an XML document that
+follow the `NixXML` convention.
 
-```C
-xmlNodePtr element;
-/* Open XML file and obtain root element */
-char *value = NixXML_parse_value(element, NULL);
+For example, the following XML document only containing a string:
+
+```xml
+<expr>hello</expr>
 ```
 
+can be parsed as follows:
 
-- Manually parse a NixXML file
-- Manually pretty print an object tree
+```C
+#include <nixxml-parse.h>
 
-- Generic parsing of a type annotated NixXML file
-- Automatically pretty print a generic object tree
+xmlNodePtr element;
+/* Open XML file and obtain root element */
+xmlChar *value = NixXML_parse_value(element, NULL);
+print("value is: %s\n"); // value is: hello
+```
 
-Data structures
-===============
-- There is no standardized library for abstract data structures in C, e.g. lists, maps, trees etc.
-- Each framework provide their own implementations of these abstract data structures
-- To parse lists and attribute sets, you may need generalized data structures, e.g. list-like or table-like
-- libnixxml provides sub library called libxxml-data that uses pointer arrays for lists and xmlHashTable for attribute sets
+The above code fragment requires the presence of an XML root element that needs
+to be retrieved by using the `libxml2` API first. The `NixXML_parse_value()`
+function invocation retrieves the string value from the XML element's contents.
 
-Implementing custom data structure support
-==========================================
-- you may want to integrate your own list-like or table-like data structures
+We can also use functions to parse (nested) data structures. For example, to
+parse the following XML code fragment representing an attribute set:
+
+```xml
+<expr>
+  <attr name="firstName">Sander</attr>
+  <attr name="lastName">van der Burg</attr>
+</expr>
+```
+
+we can use the following code snippet:
+
+```C
+#include <stdlib.h>
+#include <nixxml-parse.h>
+
+xmlNodePtr element;
+
+typedef struct
+{
+    xmlChar *firstName;
+    xmlChar *lastName;
+}
+ExampleStruct;
+
+void *create_example_struct(xmlNodePtr element, void *userdata)
+{
+    return calloc(1, sizeof(ExampleStruct));
+}
+
+void parse_and_insert_example_struct_member(xmlNodePtr element, void *table, const xmlChar *key, void *userdata)
+{
+    ExampleStruct *example = (ExampleStruct*)table;
+
+    if(xmlStrcmp(key, (xmlChar*) "firstName") == 0)
+        example->firstName = NixXML_parse_value(element, userdata);
+    else if(xmlStrcmp(key, (xmlChar*) "lastName") == 0)
+        example->lastName = NixXML_parse_value(element, userdata);
+}
+
+/* Open XML file and obtain root element */
+
+ExampleStruct *example = NixXML_parse_verbose_heterogeneous_attrset(element, "attr", "name", NULL, create_example_struct, parse_and_insert_example_struct_member);
+```
+
+To parse the attribute set in the XML code fragment above (that uses a verbose
+notation) and construct a struct out of it, we invoke the
+`NixXML_parse_verbose_heterogeneous_attrset()` function. The parameters specify
+that the XML code fragment should be parsed as follows:
+
+* It expects the name of the XML element of each attribute to be called: `attr`.
+* The property that refers to the name of the attribute is called: `name`.
+* To create a struct that stores the attributes in the XML file, the function:
+  `create_example_struct()` will be executed that allocates memory for it and
+  initializes all fields with NULL values.
+* The logic that parses the attribute values and assigns them to the struct
+  members is done by executing the `parse_and_insert_example_member()`
+  function. The implementation uses `NixXML_parse_value()` (as shown in the
+  previous example) to parse the attribute values.
+
+In addition to parsing values and attribute sets as structs, it is also possible to:
+* Parse lists, by invoking: `NixXML_parse_list()`
+* Parse attribute sets into generic data structures, such as hash tables, by
+  invoking: `NixXML_parse_verbose_attrset()`
+* Parse attribute sets using a simple XML notation for attribute sets (as
+  opposed to the verbose notation): `NixXML_parse_simple_attrset()` and
+  `NixXML_parse_simple_heterogeneous_attrset()`.
+
+Manually printing data structures in XML or Nix
+-----------------------------------------------
+In addition to parsing `NixXML` data to construct a domain model, the inverse
+process is also possible -- the API also provides convienence functions to
+print an XML or Nix representation of a domain model.
+
+For example, the following string in C:
+
+```C
+char *greeting = "Hello";
+```
+
+can be displayed as a string in the Nix expression language as follows:
+
+```C
+#include <nixxml-print-nix.h>
+
+NixXML_print_string_nix(stdout, greeting, 0, NULL); // outputs: "Hello"
+```
+
+or as an XML document, by running:
+
+```C
+#include <nixxml-print-xml.h>
+
+NixXML_print_open_root_tag(stdout, "expr");
+NixXML_print_string_xml(stdout, greeting, 0, NULL, NULL);
+NixXML_print_close_root_tag(stdout, "expr");
+```
+
+producing the following output:
+
+```xml
+<expr>Hello</expr>
+```
+
+As with the parsing infrastructure, we can also print (nested) data structures.
+For example, the struct shown in the previous section:
+
+```C
+typedef struct
+{
+    xmlChar *firstName;
+    xmlChar *lastName;
+}
+ExampleStruct;
+
+ExampleStruct example = { "Sander", "van der Burg" };
+```
+
+can be printed as a Nix expression with the following code:
+
+```C
+#include <nixxml-print-nix.h>
+
+void print_example_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
+{
+    ExampleStruct *example = (ExampleStruct*)value;
+    NixXML_print_attribute_nix(file, "firstName", example->firstName, indent_level, userdata, NixXML_print_string_nix);
+    NixXML_print_attribute_nix(file, "lastName", example->lastName, indent_level, userdata, NixXML_print_string_nix);
+}
+
+NixXML_print_attrset_nix(stdout, &example, 0, NULL, print_example_attributes_nix, NULL);
+```
+
+The above code fragment executes the function: `NixXML_print_attrset_nix()` to
+print the example struct as an attribute set. The attribute set printing
+function invokes the function: `print_example_attributes_nix()` to print the
+attribute set members.
+
+The `print_example_attributes_nix()` function prints each attribute assignment.
+It uses the `NixXML_print_string_nix()` function (shown in the previous example)
+to print each members as a string in the Nix expression language.
+
+The result of running the above code is the following Nix expression:
+
+```nix
+{
+  "firstName" = "Sander";
+  "lastName" = "van der Burg";
+}
+```
+
+the same struct can be printed as XML (using the verbose notation for attribute
+sets) with the following code:
+
+```C
+#include <nixxml-print-xml.h>
+
+void print_example_attributes_xml(FILE *file, const void *value, const char *child_element_name, const char *name_property_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
+{
+    ExampleStruct *example = (ExampleStruct*)value;
+    NixXML_print_verbose_attribute_xml(file, child_element_name, name_property_name, "firstName", example->firstName, indent_level, NULL, userdata, NixXML_print_string_xml);
+    NixXML_print_verbose_attribute_xml(file, child_element_name, name_property_name, "lastName", example->lastName, indent_level, NULL, userdata, NixXML_print_string_xml);
+}
+
+NixXML_print_open_root_tag(stdout, "expr");
+NixXML_print_verbose_attrset_xml(stdout, &example, "attr", "name", 0, NULL, NULL, print_example_attributes_xml, NULL);
+NixXML_print_close_root_tag(stdout, "expr");
+```
+
+The above code fragment uses a similar strategy as the previous example (by
+invoking `NixXML_print_verbose_attrset_xml()`) to print the example struct as an
+XML file using a verbose notation for attribute sets.
+
+The attribute set members are printed by the `print_example_attributes_xml()`
+function.
+
+The result of running the above code is the following XML output:
+
+```xml
+<expr>
+  <attr name="firstName">Sander</attr>
+  <attr name="lastName">van der Burg</attr>
+</expr>
+```
+
+In addition to printing values and attribute sets, it is also possible to:
+* Print lists in Nix and XML format: `NixXML_print_list_nix()`,
+  `NixXML_print_list_xml()`
+* Print attribute sets in simple XML notation:
+  `NixXML_print_simple_attrset_xml()`
+* Print strings as `int`, `float` or `bool`: `NixXML_print_string_as_*_xml`.
+* Print integers: `NixXML_print_int_xml()`
+* Disable indentation by settings the `indent_level` parameter to `-1`.
+* Print type annotated XML, by setting the `type_property_name` parameter to
+  a string that is not `NULL`.
+
+Using the example data structures
+---------------------------------
+There is no standardized library for abstract data structures in C, e.g. lists,
+maps, trees etc. As a result, each framework provides their own implementations
+of these abstract data structures.
+
+To parse lists and attribute sets (that have arbitrary structures), you need
+generalized data structures that are list-like or table-like.
+
+`libnixxml` provides sub library called `libnixxml-data` that uses pointer
+arrays for lists and `xmlHashTable` for attribute sets.
+
+The following XML document:
+
+```xml
+<expr>
+  <elem>test</elem>
+  <elem>example</elem>
+</expr>
+```
+
+can be parsed as a pointer array (array of strings) as follows:
+
+```C
+#include <nixxml-ptrarray.h>
+
+xmlNodePtr element;
+/* Open XML file and obtain root element */
+void **array = NixXML_parse_ptr_array(element, "elem", NULL, NixXML_parse_value);
+```
+
+and printed as a Nix expression with:
+
+```C
+NixXML_print_ptr_array_nix(stdout, array, 0, NULL, NixXML_print_string_nix);
+```
+
+and as XML with:
+
+```C
+NixXML_print_open_root_tag(stdout, "expr");
+NixXML_print_ptr_array_xml(stdout, array, "elem", 0, NULL, NULL, NixXML_print_string_xml);
+NixXML_print_close_root_tag(stdout, "expr");
+```
+
+Similarly, there is a module that works with `xmlHashTable`s
+(`nixxml-xmlhashtable.h`) providing a similar function interface as the pointer
+array module.
+
+Working with generic NixXML nodes
+---------------------------------
+The examples so far, require the user to implement all the rules to parse and
+pretty print a data structure.
+
+By using generic data structures to represent lists and tables, type annotated
+`NixXML` data and a generic `NixXML_Node` struct (that indicates what kind of
+node we have, a value, list or attribute set) we can also automatically parse
+an *entire* document by using a single function call:
+
+```C
+#include <nixxml-ptrarray.h>
+#include <nixxml-xmlhashtable.h>
+#include <nixxml-parse-generic.h>
+
+xmlNodePtr element;
+/* Open XML file and obtain root element */
+NixXML_Node *node = NixXML_generic_parse_expr(element, "type", "name", NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
+```
+
+The above function composes a generic `NixXML_Node` object. The function
+interface uses function pointers to compose lists and tables. These functions
+are provided by the pointer array and `xmlHashTable` modules in the
+`libnixxml-data` library.
+
+We can also print an entire `NixXML_Node` object structure as a Nix expression:
+
+```C
+#include <nixxml-print-generic-nix.h>
+
+NixXML_print_generic_expr_nix(stdout, node, 0, NixXML_print_ptr_array_nix, NixXML_print_xml_hash_table_nix);
+```
+
+as well as XML (using simple or verbose notation for attribute sets):
+
+```C
+#include <nixxml-print-generic-xml.h>
+
+NixXML_print_generic_expr_verbose_xml(stdout, node, 0, "expr", "elem", "attr", "name", "type", NixXML_print_ptr_array_xml, NixXML_print_xml_hash_table_verbose_xml);
+```
 
 Command-line utilities
 ======================
