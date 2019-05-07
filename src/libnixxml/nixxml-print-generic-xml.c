@@ -28,7 +28,7 @@ void NixXML_print_expr_simple_xml(FILE *file, const void *value, const int inden
     }
 }
 
-void NixXML_print_generic_expr_simple_xml(FILE *file, const NixXML_Node *value, const int indent_level, const char *root_element_name, const char *child_element_name, const char *type_property_name, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintSimpleXMLMembersFunc print_attributes)
+void NixXML_print_generic_expr_simple_xml(FILE *file, const NixXML_Node *value, const int indent_level, const char *root_element_name, const char *child_element_name, const char *type_property_name, NixXML_PrintXMLListMembersFunc print_list_elements, NixXML_PrintSimpleXMLMembersFunc print_attributes)
 {
     NixXML_SimplePrintExprParams params;
     params.child_element_name = child_element_name;
@@ -68,7 +68,7 @@ void NixXML_print_expr_verbose_xml(FILE *file, const void *value, const int inde
     }
 }
 
-void NixXML_print_generic_expr_verbose_xml(FILE *file, const NixXML_Node *value, const int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintVerboseXMLMembersFunc print_attributes)
+void NixXML_print_generic_expr_verbose_xml(FILE *file, const NixXML_Node *value, const int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, NixXML_PrintXMLListMembersFunc print_list_elements, NixXML_PrintVerboseXMLMembersFunc print_attributes)
 {
     NixXML_VerbosePrintExprParams params;
     params.list_element_name = list_element_name;

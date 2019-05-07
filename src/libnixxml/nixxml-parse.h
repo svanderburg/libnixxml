@@ -3,11 +3,59 @@
 
 #include <libxml/parser.h>
 
+/**
+ * Parses the content of a provided XML element.
+ *
+ * @param element XML element to parse.
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ */
 typedef void *(*NixXML_ParseObjectFunc) (xmlNodePtr element, void *userdata);
+
+/**
+ * Creates an abstract data structure that serves as a container to store sub
+ * elements.
+ *
+ * @param element XML element to parse.
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ */
 typedef void *(*NixXML_CreateObjectFunc) (xmlNodePtr element, void *userdata);
+
+/**
+ * Adds a value to a list-like data structure.
+ *
+ * @param list A list-like data structure
+ * @param value Value to add
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ */
 typedef void (*NixXML_AddElementFunc) (void *list, void *value, void *userdata);
+
+/**
+ * Inserts a value into a table-like data structure.
+ *
+ * @param table A table-like data structure
+ * @param key Attribute key
+ * @param value Value to insert
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ */
 typedef void (*NixXML_InsertObjectFunc) (void *table, const xmlChar *key, void *value, void *userdata);
+
+/**
+ * Finalizes a list-like data structure by discarding data it no longer needs.
+ *
+ * @param list A list-like data structure
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ */
 typedef void *(*NixXML_FinalizeListFunc) (void *list, void *userdata);
+
+/**
+ * Parses an attribute set member and inserts it into a table-like data
+ * structure in one go.
+ *
+ * @param element XML element to parse.
+ * @param table A table-like data structure
+ * @param key Attribute key
+ * @param userdata Arbitrary user data that is propagated to all parse functions
+ */
 typedef void (*NixXML_ParseAndInsertObjectFunc) (xmlNodePtr element, void *table, const xmlChar *key, void *userdata);
 
 /**

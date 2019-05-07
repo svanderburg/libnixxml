@@ -3,9 +3,54 @@
 #include <stdio.h>
 #include "nixxml-print.h"
 
+/**
+ * Prints an XML representation of a value.
+ *
+ * @param file File descriptor to write to
+ * @param value Pointer to a data structure to print
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ */
 typedef void (*NixXML_PrintXMLValueFunc) (FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata);
-typedef void (*NixXML_PrintXMLMembersFunc) (FILE *file, const char *child_element_name, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints an XML representation of the members of a list.
+ *
+ * @param file File descriptor to write to
+ * @param child_element_name Name of each attribute child element
+ * @param value Pointer to a data structure to print
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an attribute value
+ */
+typedef void (*NixXML_PrintXMLListMembersFunc) (FILE *file, const char *child_element_name, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints a simple XML representation of the members of an attribute set.
+ *
+ * @param file File descriptor to write to
+ * @param value Pointer to a data structure to print
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an attribute value
+ */
 typedef void (*NixXML_PrintSimpleXMLMembersFunc) (FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints a verbose XML representation of the members of an attribute set.
+ *
+ * @param file File descriptor to write to
+ * @param value Pointer to a data structure to print
+ * @param child_element_name Name of each attribute child element
+ * @param name_property_name Name of the name property
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an attribute value
+ */
 typedef void (*NixXML_PrintVerboseXMLMembersFunc) (FILE *file, const void *value, const char *child_element_name, const char *name_property_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
 
 /**
@@ -114,7 +159,7 @@ void NixXML_print_list_element_xml(FILE *file, const char *child_element_name, c
  * @param print_list_elements Pointer to a function that iterates over members in the list-like data structure and prints their values
  * @param print_value Pointer to a function that prints the element value
  */
-void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintXMLValueFunc print_value);
+void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLListMembersFunc print_list_elements, NixXML_PrintXMLValueFunc print_value);
 
 /**
  * Prints a simple XML representation of an attribute in which the key

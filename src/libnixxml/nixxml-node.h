@@ -20,13 +20,27 @@ NixXML_Type;
  */
 typedef struct
 {
+    /** Indicates the type of node */
     NixXML_Type type;
+    /** Actual data structure that represents the node of the provided type */
     void *value;
 }
 NixXML_Node;
 
+/**
+ * Deletes an object from heap memory.
+ *
+ * @param data Pointer to object to delete
+ */
 typedef void (*NixXML_DeleteObjectFunc) (void *data);
 
-void NixXML_delete_node(NixXML_Node *node, NixXML_DeleteObjectFunc delete_list, NixXML_DeleteObjectFunc delete_attrset);
+/**
+ * Recursively deletes a node and all its node references.
+ *
+ * @param node Pointer to an NixXML_Node instance
+ * @param delete_list Pointer to function that recursively deletes a list-like data structure
+ * @param delete_table Pointer to a function that recursively deletes a table-like data structure
+ */
+void NixXML_delete_node(NixXML_Node *node, NixXML_DeleteObjectFunc delete_list, NixXML_DeleteObjectFunc delete_table);
 
 #endif

@@ -88,7 +88,7 @@ void NixXML_print_list_element_xml(FILE *file, const char *child_element_name, c
     NixXML_print_close_root_tag(file, child_element_name);
 }
 
-void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLMembersFunc print_list_elements, NixXML_PrintXMLValueFunc print_value)
+void NixXML_print_list_xml(FILE *file, const void *list, const char *child_element_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLListMembersFunc print_list_elements, NixXML_PrintXMLValueFunc print_value)
 {
     print_type_suffix(file, type_property_name, "list");
     print_list_elements(file, child_element_name, list, indent_level >= 0 ? indent_level + 1 : indent_level, type_property_name, userdata, print_value);

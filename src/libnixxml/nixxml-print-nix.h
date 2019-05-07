@@ -3,7 +3,25 @@
 #include <stdio.h>
 #include "nixxml-print.h"
 
+/**
+ * Prints a Nix representation of a value.
+ *
+ * @param file File descriptor to write to
+ * @param value Pointer to a data structure to print
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ */
 typedef void (*NixXML_PrintValueFunc) (FILE *file, const void *value, const int indent_level, void *userdata);
+
+/**
+ * Prints a Nix representation of the members of a list or attribute set.
+ *
+ * @param file File descriptor to write to
+ * @param value Pointer to a data structure to print
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an attribute value
+ */
 typedef void (*NixXML_PrintMembersFunc) (FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
 
 /**

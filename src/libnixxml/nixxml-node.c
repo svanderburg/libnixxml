@@ -2,7 +2,7 @@
 #include <libxml/parser.h>
 #include <stdlib.h>
 
-void NixXML_delete_node(NixXML_Node *node, NixXML_DeleteObjectFunc delete_list, NixXML_DeleteObjectFunc delete_attrset)
+void NixXML_delete_node(NixXML_Node *node, NixXML_DeleteObjectFunc delete_list, NixXML_DeleteObjectFunc delete_table)
 {
     if(node != NULL)
     {
@@ -18,7 +18,7 @@ void NixXML_delete_node(NixXML_Node *node, NixXML_DeleteObjectFunc delete_list, 
                 delete_list(node->value);
                 break;
             case NIX_XML_TYPE_ATTRSET:
-                delete_attrset(node->value);
+                delete_table(node->value);
                 break;
         }
 
