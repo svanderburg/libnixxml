@@ -3,7 +3,7 @@ AC_INIT([libnixxml], m4_esyscmd([echo -n $(cat ./version)$VERSION_SUFFIX]))
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([1.9 tar-pax -Wall -Werror -Wno-extra-portability])
 
-AC_ARG_WITH([gd], AS_HELP_STRING([--with-gd], [Build with libgd support for the testcases]))
+AC_ARG_WITH([gd], AS_HELP_STRING([--with-gd], [Build with libgd support for the test cases]))
 
 # Checks for installed programs
 AC_DEFUN([NEED_PROG],
@@ -49,8 +49,10 @@ scripts/nixexpr2xml
 xsl/Makefile
 tests/Makefile
 tests/draw/Makefile
-tests/draw/convert-xml.sh
-], [
-chmod +x tests/draw/convert-xml.sh
+tests/generic/Makefile
 ])
+
+AC_CONFIG_FILES([tests/draw/convert-xml.sh], [chmod +x tests/draw/convert-xml.sh])
+AC_CONFIG_FILES([tests/generic/convert-xml.sh], [chmod +x tests/generic/convert-xml.sh])
+
 AC_OUTPUT

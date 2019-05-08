@@ -35,10 +35,9 @@ let
           name = "libnixxml";
           src = tarball;
           configureFlags = [ "--with-gd" ];
-          CFLAGS = "-Wall -ansi -pedantic -ggdb";
+          CFLAGS = "-Wall -ansi -pedantic";
           buildInputs = [ pkgconfig libxml2 gd.dev getopt libxslt nix ];
           doCheck = true;
-          dontStrip = true;
         });
   };
 in

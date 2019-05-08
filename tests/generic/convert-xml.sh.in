@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+sed 's|${prefix}/share/libnixxml/nix-xml-simplifier.xsl|../../xsl/nix-xml-simplifier.xsl|' ../../scripts/nixexpr2xml > nixexpr2xml
+sh nixexpr2xml --attr-style verbose --enable-types test-ast.nix > test-ast.xml

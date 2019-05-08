@@ -1,1 +1,1 @@
-SUBDIRS = draw
+SUBDIRS = draw generic
