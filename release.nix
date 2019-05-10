@@ -17,7 +17,8 @@ let
         src = libnixxml;
         inherit officialRelease;
         CFLAGS = "-Wall -ansi -pedantic";
-        buildInputs = [ doxygen pkgconfig libxml2 gd.dev getopt libxslt ];
+        buildInputs = [ doxygen pkgconfig libxml2 libxslt getopt glib ];
+        configureFlags = [ "--with-glib" ];
 
         preDist = ''
           make -C src apidox
@@ -27,8 +28,8 @@ let
         '';
       };
 
-    build =
-      pkgs.lib.genAttrs systems (system:
+    build = {
+      basic = pkgs.lib.genAttrs systems (system:
         with import nixpkgs { inherit system; };
 
         releaseTools.nixBuild {
@@ -39,6 +40,19 @@ let
           buildInputs = [ pkgconfig libxml2 gd.dev getopt libxslt nix ];
           doCheck = true;
         });
+
+      glib = pkgs.lib.genAttrs systems (system:
+        with import nixpkgs { inherit system; };
+
+        releaseTools.nixBuild {
+          name = "libnixxml";
+          src = tarball;
+          configureFlags = [ "--with-gd" "--with-glib" ];
+          CFLAGS = "-Wall";
+          buildInputs = [ pkgconfig libxml2 gd.dev glib getopt libxslt nix ];
+          doCheck = true;
+        });
+    };
   };
 in
 jobs
