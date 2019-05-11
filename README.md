@@ -40,6 +40,11 @@ For using the generator tools, you need to install the following packages:
 * [The Nix package manager](http://nixos.org/nix)
 * [libxslt](http://xmlsoft.org/libxslt)
 
+Optionally, GLib data structure integration can be enabled. For this you will
+need:
+
+* [GLib](https://developer.gnome.org/glib)
+
 Installation
 ============
 Installation of `libnixxml` is very straight forward by running the standard
@@ -48,6 +53,9 @@ Autotools build procedure:
     $ ./configure
     $ make
     $ make install
+
+GLib integration can be enabled by passing the `--with-glib` parameter to the
+configure script.
 
 Background
 ==========
@@ -130,6 +138,9 @@ attribute set is translated to a collection of XML
 sub elements in which the element names correspond to the attribute keys.
 The list elements are translated to generic sub elements.
 
+This representation is IMO far more readable, can be more easily consumed by
+external tools and is still somewhat Nix-independent.
+
 Attribute keys may be identifiers, but can also be strings containing characters
 that invalidate certain XML element names (e.g. `<` or `>`). It is also possible
 to use a slightly more verbose notation in which a generic element name is used
@@ -209,7 +220,9 @@ data structure support is the responsibility of the user.
 To demonstrate a possible data structure implementation, this package provides a
 library called `libnixxml-data` that serves as an example to show how to
 represent lists as pointer arrays (`void**`) and attribute sets as hash tables
-(using `xmlHashTable` that is included with `libxml2`).
+(using `xmlHashTable` that is included with `libxml2`). This package also
+provides an optional alternative implementation called `libnixxml-glib` (that
+needs be enabled at build-time) that integrates with GLib.
 
 By using generic data structures and type annotated XML data, it is also
 possible to *generically* parse and print a `NixXML` file with nested arbitrary
@@ -532,6 +545,16 @@ as well as XML (using simple or verbose notation for attribute sets):
 NixXML_print_generic_expr_verbose_xml(stdout, node, 0, "expr", "elem", "attr", "name", "type", NixXML_print_ptr_array_xml, NixXML_print_xml_hash_table_verbose_xml);
 ```
 
+Integrating with GLib data structures
+-------------------------------------
+In addition to simple example data structures, it is also possible to integrate
+with data structures provided by the GLib library. The `nixxml-gptrarray.h`
+allows lists to be converted to `GPtrArray`s. The `nixxml-ghashtable.h` allows
+you to use attribute sets as `GHashTable`s.
+
+The function interfaces of these modules are similar to the pointer array and
+`xmlHashTable` modules of the example data structure library.
+
 Command-line utilities
 ======================
 This package also include two command-line tools.
@@ -608,4 +631,7 @@ $ nixxml-pp -f xml \
 
 License
 =======
-This package is [MIT licensed](https://opensource.org/licenses/MIT).
+This package is [MIT licensed](https://opensource.org/licenses/MIT). The
+`libnixxml-glib` sub library (when enabled) is convered by the
+[LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html) or
+higher.
