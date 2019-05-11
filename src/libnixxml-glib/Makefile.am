@@ -1,5 +1,5 @@
-pkglib_LTLIBRARIES = libnixxml-glib.la
-pkginclude_HEADERS = nixxml-gptrarray.h nixxml-ghashtable.h
+lib_LTLIBRARIES = libnixxml-glib.la
+include_HEADERS = nixxml-gptrarray.h nixxml-ghashtable.h
 
 libnixxml_glib_la_SOURCES = nixxml-gptrarray.c nixxml-ghashtable.c
 libnixxml_glib_la_CFLAGS = $(GLIB2_CFLAGS) $(LIBXML2_CFLAGS) -I../libnixxml
