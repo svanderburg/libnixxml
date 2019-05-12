@@ -94,7 +94,8 @@ void *NixXML_parse_list(xmlNodePtr element, const char *child_element_name, void
  * Parses a heterogeneous table-like data structure using a simple XML notation
  * in which every sub element name represents a key and every content text the
  * value. Every element is parsed and inserted in one go. This function is
- * particularly useful to parse data for creating structs or classes.
+ * particularly useful when members of an attribute set could have different
+ * types.
  *
  * @param element XML element to parse.
  * @param userdata Arbitrary user data that is propagated to all parse functions
@@ -109,8 +110,7 @@ void *NixXML_parse_simple_heterogeneous_attrset(xmlNodePtr element, void *userda
  * sub element name represents a key and every content text the value. Every
  * element is parsed according to a strategy and inserted into the table-like
  * data structure according to a strategy. This function is particularly useful
- * to parse data for creating generic data structures, such as a hash table or
- * map.
+ * if all members of an attribute set have a uniform type.
  *
  * @param element XML element to parse.
  * @param userdata Arbitrary user data that is propagated to all parse functions
@@ -125,7 +125,7 @@ void *NixXML_parse_simple_attrset(xmlNodePtr element, void *userdata, NixXML_Cre
  * Parses a table-like data structure using a simple XML notation in which every
  * sub element name represents a key and every content text the value. Every
  * element is parsed and inserted in one go. This function is particularly
- * useful to parse data for creating structs or classes.
+ * useful when members of an attribute set could have different types.
  *
  * @param element XML element to parse.
  * @param child_element_name Name of the child XML elements in the attribute set or NULL to accept any sub element as an entry.
@@ -141,8 +141,7 @@ void *NixXML_parse_verbose_heterogeneous_attrset(xmlNodePtr element, const char 
  * sub element is annotated with a name attribute and the content text the value.
  * Every element is parsed according to a strategy and inserted into the
  * table-like data structure according to a strategy. This function is
- * particularly useful to parse data for creating generic data structures, such
- * as a hash table or map.
+ * particularly useful if all members of an attribute set have a uniform type.
  *
  * @param element XML element to parse.
  * @param child_element_name Name of the child XML elements in the attribute set or NULL to accept any sub element as an entry.

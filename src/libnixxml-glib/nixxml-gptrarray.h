@@ -107,7 +107,7 @@ void NixXML_print_g_ptr_array_xml(FILE *file, const GPtrArray *array, const char
  * @param child_element_name Name of each list child element
  * @param userdata Arbitrary user data that gets propagated to all print functions
  * @param parse_object Pointer to a function that parses the value
- * @return A pointer array (void**)
+ * @return A GPtrArray
  */
 void *NixXML_parse_g_ptr_array(xmlNodePtr element, const char *child_element_name, void *userdata, NixXML_ParseObjectFunc parse_object);
 

@@ -321,8 +321,8 @@ that the XML code fragment should be parsed as follows:
 
 In addition to parsing values and attribute sets as structs, it is also possible to:
 * Parse lists, by invoking: `NixXML_parse_list()`
-* Parse attribute sets into generic data structures, such as hash tables, by
-  invoking: `NixXML_parse_verbose_attrset()`
+* Parse uniformly typed sets (in which every attribute set member has the same
+  type), by invoking: `NixXML_parse_verbose_attrset()`
 * Parse attribute sets using a simple XML notation for attribute sets (as
   opposed to the verbose notation): `NixXML_parse_simple_attrset()` and
   `NixXML_parse_simple_heterogeneous_attrset()`.
@@ -451,7 +451,7 @@ In addition to printing values and attribute sets, it is also possible to:
   `NixXML_print_simple_attrset_xml()`
 * Print strings as `int`, `float` or `bool`: `NixXML_print_string_as_*_xml`.
 * Print integers: `NixXML_print_int_xml()`
-* Disable indentation by settings the `indent_level` parameter to `-1`.
+* Disable indentation by setting the `indent_level` parameter to `-1`.
 * Print type annotated XML, by setting the `type_property_name` parameter to
   a string that is not `NULL`.
 
