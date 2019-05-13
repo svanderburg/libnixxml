@@ -45,11 +45,11 @@ static void parse_and_insert_drawspec_attribute(xmlNodePtr element, void *table,
     if(xmlStrcmp(element->name, (xmlChar*) "dimensions") == 0)
         drawSpec->dimensions = parse_dimensions(element, userdata);
     else if(xmlStrcmp(element->name, (xmlChar*) "figures") == 0)
-        drawSpec->figures = NixXML_parse_xml_hash_table(element, userdata, parse_figure);
+        drawSpec->figures = NixXML_parse_xml_hash_table_simple(element, userdata, parse_figure);
     else if(xmlStrcmp(key, (xmlChar*) "draw") == 0)
         drawSpec->draw = NixXML_parse_ptr_array(element, "elem", userdata, parse_draw_command);
     else if(xmlStrcmp(key, (xmlChar*) "meta") == 0)
-        drawSpec->meta = NixXML_parse_xml_hash_table(element, userdata, NixXML_parse_value);
+        drawSpec->meta = NixXML_parse_xml_hash_table_simple(element, userdata, NixXML_parse_value);
     else if(xmlStrcmp(key, (xmlChar*) "tags") == 0)
         drawSpec->tags = NixXML_parse_ptr_array(element, "elem", userdata, NixXML_parse_value);
 }
