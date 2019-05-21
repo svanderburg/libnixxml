@@ -27,7 +27,7 @@
 #include "nixxml-gptrarray.h"
 #include "nixxml-ghashtable.h"
 
-static void *generic_parse_expr(xmlNodePtr element)
+static NixXML_Node *generic_parse_expr(xmlNodePtr element)
 {
     return NixXML_generic_parse_expr(element, "type", "name", NixXML_create_g_ptr_array, NixXML_create_g_hash_table, NixXML_add_value_to_g_ptr_array, NixXML_insert_into_g_hash_table, NixXML_finalize_g_ptr_array);
 }
@@ -76,7 +76,7 @@ static void delete_node(NixXML_Node *node);
 
 static void delete_list(void *list)
 {
-    NixXML_delete_g_ptr_array(list, (NixXML_DeletePtrArrayElementFunc)delete_node);
+    NixXML_delete_g_ptr_array((GPtrArray*)list, (NixXML_DeletePtrArrayElementFunc)delete_node);
 }
 
 static void delete_attrset(GHashTable *hash_table)
@@ -112,6 +112,8 @@ int pretty_print_file_glib(const char *config_file, FormatType format, int inden
 
         switch(format)
         {
+            case FORMAT_NONE:
+                break;
             case FORMAT_NIX:
                 NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_g_ptr_array_elements_nix, NixXML_print_g_hash_table_attributes_nix);
                 break;

@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         {"type-property-name", required_argument, 0, '5'},
         {0, 0, 0, 0}
     };
-    FormatType format = 0;
+    FormatType format = FORMAT_NONE;
     int indent_level = 0;
     char *root_element_name = "expr";
     char *list_element_name = "list";

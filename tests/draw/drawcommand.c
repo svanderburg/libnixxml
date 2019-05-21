@@ -39,15 +39,15 @@ static void insert_draw_command_attribute(void *table, const xmlChar *key, void 
     DrawCommand *drawCommand = (DrawCommand*)table;
 
     if(xmlStrcmp(key, (xmlChar*) "figure") == 0)
-        drawCommand->figure = value;
+        drawCommand->figure = (xmlChar*)value;
     else if(xmlStrcmp(key, (xmlChar*) "x") == 0)
     {
-        drawCommand->x = atoi(value);
+        drawCommand->x = atoi((char*)value);
         xmlFree(value);
     }
     else if(xmlStrcmp(key, (xmlChar*) "y") == 0)
     {
-        drawCommand->y = atoi(value);
+        drawCommand->y = atoi((char*)value);
         xmlFree(value);
     }
     else
@@ -123,6 +123,6 @@ void print_draw_command_xml(FILE *file, const void *drawCommand, const int inden
 
 void execute_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table, gdImagePtr image)
 {
-    Figure *figure = xmlHashLookup(figures_table, drawCommand->figure);
+    Figure *figure = (Figure*)xmlHashLookup(figures_table, drawCommand->figure);
     draw_figure(figure, image, drawCommand->x, drawCommand->y);
 }

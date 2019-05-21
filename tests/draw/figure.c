@@ -38,20 +38,20 @@ static void insert_figure_attribute(void *table, const xmlChar *key, void *value
     Figure *figure = (Figure*)table;
 
     if(xmlStrcmp(key, (xmlChar*) "type") == 0)
-        figure->type = value;
+        figure->type = (xmlChar*)value;
     else if(xmlStrcmp(key, (xmlChar*) "width") == 0)
     {
-        figure->width = atoi(value);
+        figure->width = atoi((char*)value);
         xmlFree(value);
     }
     else if(xmlStrcmp(key, (xmlChar*) "height") == 0)
     {
-        figure->height = atoi(value);
+        figure->height = atoi((char*)value);
         xmlFree(value);
     }
     else if(xmlStrcmp(key, (xmlChar*) "radius") == 0)
     {
-        figure->radius = atoi(value);
+        figure->radius = atoi((char*)value);
         xmlFree(value);
     }
     else

@@ -26,6 +26,10 @@
 #include "nixxml-print-nix.h"
 #include "nixxml-print-xml.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Creates a new xmlHashTable by parsing the sub elements of a provided XML
  * element.
@@ -142,5 +146,9 @@ void *NixXML_parse_xml_hash_table_simple(xmlNodePtr element, void *userdata, Nix
  * @return A pointer to an xmlHashTable
  */
 void *NixXML_parse_xml_hash_table_verbose(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_ParseObjectFunc parse_object);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

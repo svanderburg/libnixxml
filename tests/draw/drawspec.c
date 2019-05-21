@@ -43,15 +43,15 @@ static void parse_and_insert_drawspec_attribute(xmlNodePtr element, void *table,
     DrawSpec *drawSpec = (DrawSpec*)table;
 
     if(xmlStrcmp(element->name, (xmlChar*) "dimensions") == 0)
-        drawSpec->dimensions = parse_dimensions(element, userdata);
+        drawSpec->dimensions = (Dimensions*)parse_dimensions(element, userdata);
     else if(xmlStrcmp(element->name, (xmlChar*) "figures") == 0)
-        drawSpec->figures = NixXML_parse_xml_hash_table_simple(element, userdata, parse_figure);
+        drawSpec->figures = (xmlHashTablePtr)NixXML_parse_xml_hash_table_simple(element, userdata, parse_figure);
     else if(xmlStrcmp(key, (xmlChar*) "draw") == 0)
-        drawSpec->draw = NixXML_parse_ptr_array(element, "elem", userdata, parse_draw_command);
+        drawSpec->draw = (DrawCommand**)NixXML_parse_ptr_array(element, "elem", userdata, parse_draw_command);
     else if(xmlStrcmp(key, (xmlChar*) "meta") == 0)
-        drawSpec->meta = NixXML_parse_xml_hash_table_simple(element, userdata, NixXML_parse_value);
+        drawSpec->meta = (xmlHashTablePtr)NixXML_parse_xml_hash_table_simple(element, userdata, NixXML_parse_value);
     else if(xmlStrcmp(key, (xmlChar*) "tags") == 0)
-        drawSpec->tags = NixXML_parse_ptr_array(element, "elem", userdata, NixXML_parse_value);
+        drawSpec->tags = (xmlChar**)NixXML_parse_ptr_array(element, "elem", userdata, NixXML_parse_value);
 }
 
 static void *parse_drawspec(xmlNodePtr element, void *userdata)
@@ -88,7 +88,7 @@ DrawSpec *open_drawspec(const char *filename)
     }
 
     /* Parse manifest */
-    drawSpec = parse_drawspec(node_root, NULL);
+    drawSpec = (DrawSpec*)parse_drawspec(node_root, NULL);
 
     /* Cleanup */
     xmlFreeDoc(doc);
@@ -101,7 +101,7 @@ DrawSpec *open_drawspec(const char *filename)
 
 static void figure_deallocator(void *payload, const xmlChar *name)
 {
-    delete_figure(payload);
+    delete_figure((Figure*)payload);
 }
 
 static void meta_deallocator(void *payload, const xmlChar *name)
@@ -144,7 +144,7 @@ static void scanner_check_figure(void *payload, void *data, const xmlChar *name)
 {
     int *status = (int*)data;
 
-    if(!check_figure(payload))
+    if(!check_figure((Figure*)payload))
         *status = FALSE;
 }
 

@@ -24,6 +24,7 @@
 
 typedef enum
 {
+    FORMAT_NONE = 0,
     FORMAT_NIX = 1,
     FORMAT_SIMPLE_XML = 2,
     FORMAT_VERBOSE_XML = 3

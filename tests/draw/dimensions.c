@@ -38,9 +38,9 @@ static void insert_dimensions_attribute(void *table, const xmlChar *key, void *v
     Dimensions *dimensions = (Dimensions*)table;
 
     if(xmlStrcmp(key, (xmlChar*) "width") == 0)
-        dimensions->width = atoi(value);
+        dimensions->width = atoi((char*)value);
     else if(xmlStrcmp(key, (xmlChar*) "height") == 0)
-        dimensions->height = atoi(value);
+        dimensions->height = atoi((char*)value);
 
     xmlFree(value);
 }
