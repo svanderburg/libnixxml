@@ -90,7 +90,8 @@ syntax tree. For example, the following Nix expression:
 }
 ```
 
-can be strictly evaluated in XML mode by the Nix expression evaluator:
+can be converted to XML with the `builtins.toXML` primop or strictly evaluated
+in XML mode by the Nix expression evaluator:
 
 ```bash
 $ nix-instantiate --eval-only --xml --strict example.nix
@@ -116,8 +117,8 @@ resulting in the following XML data:
 ```
 
 The above XML snippet is very verbose and not very practical to be consumed by
-an external tool -- it almost always needs to be transformed to another XML
-format.
+an external tool (due to its structure) -- it almost always needs to be
+transformed to another XML format.
 
 This toolset also allows you to generate (and consume) a more practical XML
 representation of the Nix expression shown earlier:
@@ -136,7 +137,8 @@ representation of the Nix expression shown earlier:
 In the above expression the type and meta information is discarded and the
 attribute set is translated to a collection of XML
 sub elements in which the element names correspond to the attribute keys.
-The list elements are translated to generic sub elements.
+The list elements are translated to generic sub elements (the above example
+uses `elem`, but any element name can be chosen).
 
 This representation is IMO far more readable, can be more easily consumed by
 external tools and is still somewhat Nix-independent.
@@ -144,7 +146,7 @@ external tools and is still somewhat Nix-independent.
 Attribute keys may be identifiers, but can also be strings containing characters
 that invalidate certain XML element names (e.g. `<` or `>`). It is also possible
 to use a slightly more verbose notation in which a generic element name is used
-and the `name` attribute is used for each attribute set key:
+and the `name` property is used for each attribute set key:
 
 ```xml
 <?xml version="1.0"?>
@@ -188,12 +190,12 @@ Overview
 ========
 The following table summarizes the concepts of this library:
 
-Concept        | Nix expression representation | XML representation                                  | C application domain model
----------------|-------------------------------|-----------------------------------------------------|----------------------------------
-value          | `"hello"`                     | `hello`                                             | `char*`
-list           | `[ "hello" "bye" ]`           | `<elem>hello</elem><elem>bye</elem>`                | `void**`, linked list, ...
-attribute set  | `{ a = "hello"; b = "bye"; }` | `<a>hello</a><b>bye</b>`                            | `xmlHashTablePtr`, `struct`, ...
-attribute set  | `{ a = "hello"; b = "bye"; }` | `<attr name="a">hello</a><attr name="b">bye</attr>` | `xmlHashTablePtr`, `struct`, ...
+Concept        | Nix expression representation | XML representation                                     | C application domain model
+---------------|-------------------------------|--------------------------------------------------------|----------------------------------
+value          | `"hello"`                     | `hello`                                                | `char*`
+list           | `[ "hello" "bye" ]`           | `<elem>hello</elem><elem>bye</elem>`                   | `void**`, linked list, ...
+attribute set  | `{ a = "hello"; b = "bye"; }` | `<a>hello</a><b>bye</b>`                               | `xmlHashTablePtr`, `struct`, ...
+attribute set  | `{ a = "hello"; b = "bye"; }` | `<attr name="a">hello</attr><attr name="b">bye</attr>` | `xmlHashTablePtr`, `struct`, ...
 
 The above table shows the concepts that the `NixXML` defines, and how they can
 be represented in the Nix expression language, XML and in a domain model of a C
@@ -252,7 +254,7 @@ can be parsed as follows:
 xmlNodePtr element;
 /* Open XML file and obtain root element */
 xmlChar *value = NixXML_parse_value(element, NULL);
-print("value is: %s\n"); // value is: hello
+printf("value is: %s\n"); // value is: hello
 ```
 
 The above code fragment requires the presence of an XML root element that needs
@@ -305,7 +307,7 @@ ExampleStruct *example = NixXML_parse_verbose_heterogeneous_attrset(element, "at
 ```
 
 To parse the attribute set in the XML code fragment above (that uses a verbose
-notation) and construct a struct out of it, we invoke the
+notation) and derive a struct from it, we invoke the
 `NixXML_parse_verbose_heterogeneous_attrset()` function. The parameters specify
 that the XML code fragment should be parsed as follows:
 
@@ -315,14 +317,16 @@ that the XML code fragment should be parsed as follows:
   `create_example_struct()` will be executed that allocates memory for it and
   initializes all fields with NULL values.
 * The logic that parses the attribute values and assigns them to the struct
-  members is done by executing the `parse_and_insert_example_member()`
-  function. The implementation uses `NixXML_parse_value()` (as shown in the
-  previous example) to parse the attribute values.
+  members is in the `parse_and_insert_example_member()` function. The
+  implementation uses `NixXML_parse_value()` (as shown in the previous example)
+  to parse the attribute values.
 
-In addition to parsing values and attribute sets as structs, it is also possible to:
+In addition to parsing values as strings and attribute sets as structs, it is
+also possible to:
+
 * Parse lists, by invoking: `NixXML_parse_list()`
-* Parse uniformly typed sets (in which every attribute set member has the same
-  type), by invoking: `NixXML_parse_verbose_attrset()`
+* Parse uniformly typed attribute sets (in which every attribute set member has
+  the same type), by invoking: `NixXML_parse_verbose_attrset()`
 * Parse attribute sets using a simple XML notation for attribute sets (as
   opposed to the verbose notation): `NixXML_parse_simple_attrset()` and
   `NixXML_parse_simple_heterogeneous_attrset()`.
@@ -330,7 +334,7 @@ In addition to parsing values and attribute sets as structs, it is also possible
 Manually printing data structures in XML or Nix
 -----------------------------------------------
 In addition to parsing `NixXML` data to construct a domain model, the inverse
-process is also possible -- the API also provides convienence functions to
+process is also possible -- the API also provides convenience functions to
 print an XML or Nix representation of a domain model.
 
 For example, the following string in C:
@@ -399,7 +403,7 @@ attribute set members.
 
 The `print_example_attributes_nix()` function prints each attribute assignment.
 It uses the `NixXML_print_string_nix()` function (shown in the previous example)
-to print each members as a string in the Nix expression language.
+to print each member as a string in the Nix expression language.
 
 The result of running the above code is the following Nix expression:
 
@@ -459,7 +463,7 @@ Using the example data structures
 ---------------------------------
 There is no standardized library for abstract data structures in C, e.g. lists,
 maps, trees etc. As a result, each framework provides their own implementations
-of these abstract data structures.
+of them.
 
 To parse lists and attribute sets (that have arbitrary structures), you need
 generalized data structures that are list-like or table-like.
@@ -504,6 +508,16 @@ Similarly, there is a module that works with `xmlHashTable`s
 (`nixxml-xmlhashtable.h`) providing a similar function interface as the pointer
 array module.
 
+Integrating with GLib data structures
+-------------------------------------
+In addition to simple example data structures, it is also possible to integrate
+with data structures provided by the GLib library. The `nixxml-gptrarray.h`
+allows lists to be converted to `GPtrArray`s. The `nixxml-ghashtable.h` allows
+you to use attribute sets as `GHashTable`s.
+
+The function interfaces of these modules are similar to the pointer array and
+`xmlHashTable` modules of the example data structure library.
+
 Working with generic NixXML nodes
 ---------------------------------
 The examples so far, require the user to implement all the rules to parse and
@@ -511,8 +525,8 @@ pretty print a data structure.
 
 By using generic data structures to represent lists and tables, type annotated
 `NixXML` data and a generic `NixXML_Node` struct (that indicates what kind of
-node we have, a value, list or attribute set) we can also automatically parse
-an *entire* document by using a single function call:
+node we have, such as a value, list or attribute set) we can also automatically
+parse an *entire* document by using a single function call:
 
 ```C
 #include <nixxml-ptrarray.h>
@@ -544,16 +558,6 @@ as well as XML (using simple or verbose notation for attribute sets):
 
 NixXML_print_generic_expr_verbose_xml(stdout, node, 0, "expr", "elem", "attr", "name", "type", NixXML_print_ptr_array_xml, NixXML_print_xml_hash_table_verbose_xml);
 ```
-
-Integrating with GLib data structures
--------------------------------------
-In addition to simple example data structures, it is also possible to integrate
-with data structures provided by the GLib library. The `nixxml-gptrarray.h`
-allows lists to be converted to `GPtrArray`s. The `nixxml-ghashtable.h` allows
-you to use attribute sets as `GHashTable`s.
-
-The function interfaces of these modules are similar to the pointer array and
-`xmlHashTable` modules of the example data structure library.
 
 Command-line utilities
 ======================
@@ -617,8 +621,8 @@ or simple XML:
 $ nixxml-pp -f simple-xml test-ast.nix
 ```
 
-You can also pick different names for the root, attribute and list elements, if
-desired:
+You can also pick different names for the root, attribute and list elements,
+the attribute and type attribute names, if desired:
 
 ```bash
 $ nixxml-pp -f xml \
@@ -626,6 +630,7 @@ $ nixxml-pp -f xml \
   --list-element-name item \
   --attr-element-name property \
   --name-attribute-name key \
+  --type-attribute-name mytype \
   test-ast.nix
 ```
 
