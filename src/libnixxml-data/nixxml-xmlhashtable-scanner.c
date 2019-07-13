@@ -19,18 +19,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __NIXXML_PRETTY_PRINT_H
-#define __NIXXML_PRETTY_PRINT_H
+#include "nixxml-xmlhashtable-scanner.h"
+#include <stdlib.h>
 
-typedef enum
+typedef struct
 {
-    FORMAT_NONE = 0,
-    FORMAT_NIX = 1,
-    FORMAT_SIMPLE_XML = 2,
-    FORMAT_VERBOSE_XML = 3
+    xmlChar **names;
+    unsigned int length;
 }
-FormatType;
+KeyParams;
 
-int pretty_print_file(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys);
+static void scanner_keys(void *payload, void *data, const xmlChar *name)
+{
+    KeyParams *params = (KeyParams*)data;
+    params->names = (xmlChar**)realloc(params->names, (params->length + 1) * sizeof(xmlChar*));
+    params->names[params->length] = (xmlChar*)name;
+    params->length++;
+}
 
-#endif
+static int compare_keys(const void *l, const void *r)
+{
+    return xmlStrcmp(*((xmlChar**)l), *((xmlChar**)r));
+}
+
+void NixXML_xmlHashScanOrdered(xmlHashTablePtr hash_table, xmlHashScanner scanner_function, void *data)
+{
+    KeyParams params = { NULL, 0 };
+    unsigned int i;
+
+    xmlHashScan(hash_table, scanner_keys, &params);
+    qsort(params.names, params.length, sizeof(xmlChar*), compare_keys);
+
+    for(i = 0; i < params.length; i++)
+    {
+        xmlChar *name = params.names[i];
+        void *payload = xmlHashLookup(hash_table, name);
+        scanner_function(payload, data, name);
+    }
+
+    free(params.names);
+}

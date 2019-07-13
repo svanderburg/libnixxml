@@ -19,18 +19,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __NIXXML_PRETTY_PRINT_H
-#define __NIXXML_PRETTY_PRINT_H
+#ifndef __NIXXML_XMLHASHTABLE_SCANNER_H
+#define __NIXXML_XMLHASHTABLE_SCANNER_H
+#include <libxml/parser.h>
 
-typedef enum
-{
-    FORMAT_NONE = 0,
-    FORMAT_NIX = 1,
-    FORMAT_SIMPLE_XML = 2,
-    FORMAT_VERBOSE_XML = 3
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * A function with a similar purpose as xmlHashScan() but traverses the keys
+ * in a deterministic order.
+ *
+ * @param hash_table The hash table
+ * @param scanner_function Scanner function for each item in the hash table
+ * @param data Extra data passed to the scanner function
+ */
+void NixXML_xmlHashScanOrdered(xmlHashTablePtr hash_table, xmlHashScanner scanner_function, void *data);
+
+#ifdef __cplusplus
 }
-FormatType;
-
-int pretty_print_file(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys);
+#endif
 
 #endif

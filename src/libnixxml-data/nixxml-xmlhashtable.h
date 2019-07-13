@@ -51,7 +51,8 @@ void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata);
 void NixXML_insert_into_xml_hash_table(void *table, const xmlChar *key, void *value, void *userdata);
 
 /**
- * Prints a Nix representation of all members in the table.
+ * Prints a Nix representation of all members in the table. The keys are
+ * traversed in the order in which they appear in the table.
  *
  * @param file File descriptor to write to
  * @param value An xmlHashTable instance
@@ -62,7 +63,8 @@ void NixXML_insert_into_xml_hash_table(void *table, const xmlChar *key, void *va
 void NixXML_print_xml_hash_table_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
 
 /**
- * Prints a Nix representation of an attribute set from an xmlHashTable.
+ * Prints a Nix representation of an attribute set from an xmlHashTable. It
+ * traverses the keys in the order in which they appear in the table.
  *
  * @param file File descriptor to write to
  * @param hash_table Pointer to an xmlHashTable
@@ -73,7 +75,32 @@ void NixXML_print_xml_hash_table_attributes_nix(FILE *file, const void *value, c
 void NixXML_print_xml_hash_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
 
 /**
- * Prints a simple XML representation of all members in the table.
+ * Prints a Nix representation of all members in the table. The keys are
+ * traversed in a deterministic order.
+ *
+ * @param file File descriptor to write to
+ * @param value An xmlHashTable instance
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an element value
+ */
+void NixXML_print_xml_hash_table_ordered_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
+
+/**
+ * Prints a Nix representation of an attribute set from an xmlHashTable. It
+ * traverses in a deterministic order.
+ *
+ * @param file File descriptor to write to
+ * @param hash_table Pointer to an xmlHashTable
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an element value
+ */
+void NixXML_print_xml_hash_table_ordered_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value);
+
+/**
+ * Prints a simple XML representation of all members in the table. The keys are
+ * traversed in the order in which they appear in the table.
  *
  * @param file File descriptor to write to
  * @param value An xmlHashTable instance
@@ -86,6 +113,7 @@ void NixXML_print_xml_hash_table_simple_attributes_xml(FILE *file, const void *v
 
 /**
  * Prints a simple XML representation of an attribute set from an xmlHashTable.
+ * It traverses the keys in the order in which they appear in the table.
  *
  * @param file File descriptor to write to
  * @param hash_table An xmlHashTable instance
@@ -96,7 +124,33 @@ void NixXML_print_xml_hash_table_simple_attributes_xml(FILE *file, const void *v
 void NixXML_print_xml_hash_table_simple_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
 
 /**
- * Prints a verbose XML representation of all members in the table.
+ * Prints a simple XML representation of all members in the table. The keys are
+ * traversed in a deterministic order.
+ *
+ * @param file File descriptor to write to
+ * @param value An xmlHashTable instance
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an element value
+ */
+void NixXML_print_xml_hash_table_simple_ordered_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints a simple XML representation of an attribute set from an xmlHashTable.
+ * It traverses the keys in a deterministic order.
+ *
+ * @param file File descriptor to write to
+ * @param hash_table An xmlHashTable instance
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an element value
+ */
+void NixXML_print_xml_hash_table_simple_ordered_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints a verbose XML representation of all members in the table. The keys are
+ * traversed in the order in which they appear in the table.
  *
  * @param file File descriptor to write to
  * @param value An xmlHashTable instance
@@ -111,6 +165,7 @@ void NixXML_print_xml_hash_table_verbose_attributes_xml(FILE *file, const void *
 
 /**
  * Prints a verbose XML representation of an attribute set from an xmlHashTable.
+ * It traverses the keys in the order in which they appear in the table.
  *
  * @param file File descriptor to write to
  * @param hash_table An xmlHashTable instance
@@ -122,6 +177,36 @@ void NixXML_print_xml_hash_table_verbose_attributes_xml(FILE *file, const void *
  * @param print_value Pointer to a function that prints an element value
  */
 void NixXML_print_xml_hash_table_verbose_xml(FILE *file, xmlHashTablePtr hash_table, const char *child_element_name, const char *name_property_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints a verbose XML representation of all members in the table. The keys are
+ * traversed in a deterministic order.
+ *
+ * @param file File descriptor to write to
+ * @param value An xmlHashTable instance
+ * @param child_element_name Name of each attribute child element
+ * @param name_property_name Name of the name property
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an element value
+ */
+void NixXML_print_xml_hash_table_verbose_ordered_attributes_xml(FILE *file, const void *value, const char *child_element_name, const char *name_property_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
+
+/**
+ * Prints a verbose XML representation of an attribute set from an xmlHashTable.
+ * It traverses the keys in a deterministic order.
+ *
+ * @param file File descriptor to write to
+ * @param hash_table An xmlHashTable instance
+ * @param child_element_name Name of each attribute child element
+ * @param name_property_name Name of the name property
+ * @param indent_level Specifies the indent level, or -1 to disable indentation
+ * @param type_property_name Name of the type property or NULL to not display any type annotations
+ * @param userdata Arbitrary user data that gets propagated to all print functions
+ * @param print_value Pointer to a function that prints an element value
+ */
+void NixXML_print_xml_hash_table_verbose_ordered_xml(FILE *file, xmlHashTablePtr hash_table, const char *child_element_name, const char *name_property_name, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value);
 
 /**
  * Parses an xmlHashTable from the sub elements of a provided XML element using

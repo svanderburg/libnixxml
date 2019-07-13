@@ -31,6 +31,6 @@ typedef enum
 }
 FormatType;
 
-int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name);
+int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys);
 
 #endif

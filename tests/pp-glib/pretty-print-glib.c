@@ -82,11 +82,10 @@ static void delete_list(void *list)
 static void delete_attrset(GHashTable *hash_table)
 {
     GHashTableIter iter;
-    gpointer *key;
-    gpointer *obj;
+    gpointer key, obj;
 
     g_hash_table_iter_init(&iter, hash_table);
-    while(g_hash_table_iter_next(&iter, (gpointer*)&key, (gpointer*)&obj))
+    while(g_hash_table_iter_next(&iter, &key, &obj))
         delete_node((NixXML_Node*)obj);
 
     g_hash_table_destroy(hash_table);
@@ -97,7 +96,7 @@ static void delete_node(NixXML_Node *node)
     NixXML_delete_node(node, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
 }
 
-int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name)
+int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys)
 {
     NixXML_Node *node = open_expr(config_file);
 
@@ -115,13 +114,22 @@ int pretty_print_file_glib(const char *config_file, FormatType format, int inden
             case FORMAT_NONE:
                 break;
             case FORMAT_NIX:
-                NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_g_ptr_array_elements_nix, NixXML_print_g_hash_table_attributes_nix);
+                if(order_keys)
+                    NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_g_ptr_array_elements_nix, NixXML_print_g_hash_table_ordered_attributes_nix);
+                else
+                    NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_g_ptr_array_elements_nix, NixXML_print_g_hash_table_attributes_nix);
                 break;
             case FORMAT_VERBOSE_XML:
-                NixXML_print_generic_expr_verbose_xml(stdout, node, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, NixXML_print_g_ptr_array_elements_xml, NixXML_print_g_hash_table_verbose_attributes_xml);
+                if(order_keys)
+                    NixXML_print_generic_expr_verbose_xml(stdout, node, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, NixXML_print_g_ptr_array_elements_xml, NixXML_print_g_hash_table_verbose_ordered_attributes_xml);
+                else
+                    NixXML_print_generic_expr_verbose_xml(stdout, node, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, NixXML_print_g_ptr_array_elements_xml, NixXML_print_g_hash_table_verbose_attributes_xml);
                 break;
             case FORMAT_SIMPLE_XML:
-                NixXML_print_generic_expr_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name, NixXML_print_g_ptr_array_elements_xml, NixXML_print_g_hash_table_simple_attributes_xml);
+                if(order_keys)
+                    NixXML_print_generic_expr_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name, NixXML_print_g_ptr_array_elements_xml, NixXML_print_g_hash_table_simple_ordered_attributes_xml);
+                else
+                    NixXML_print_generic_expr_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name, NixXML_print_g_ptr_array_elements_xml, NixXML_print_g_hash_table_simple_attributes_xml);
                 break;
         }
 

@@ -24,6 +24,9 @@
 #include <getopt.h>
 #include "pretty-print-glib.h"
 
+#define TRUE 1
+#define FALSE 0
+
 static void print_usage(const char *command)
 {
     printf("Usage: %s -f OUTPUT_FORMAT CONFIG_XML\n\n", command);
@@ -48,7 +51,12 @@ static void print_usage(const char *command)
     "      --attr-element-name=NAME   Name of a attribute (defaults to: attr)\n"
     "      --name-property-name=NAME  Name of the attribute name property (defaults to:\n"
     "                                 name)\n"
-    "      --type-property-name=NAME  Name of the type property (defaults to: type)"
+    );
+
+    puts(
+    "      --type-property-name=NAME  Name of the type property (defaults to: type)\n"
+    "      --order-keys               Indicates that the keys of the hash tables\n"
+    "                                 should be ordered"
     );
 }
 
@@ -67,6 +75,7 @@ int main(int argc, char *argv[])
         {"attr-element-name", required_argument, 0, '3'},
         {"name-property-name", required_argument, 0, '4'},
         {"type-property-name", required_argument, 0, '5'},
+        {"order-keys", no_argument, 0, '6'},
         {0, 0, 0, 0}
     };
     FormatType format = FORMAT_NONE;
@@ -76,6 +85,7 @@ int main(int argc, char *argv[])
     char *attr_element_name = "attr";
     char *name_property_name = "name";
     char *type_property_name = "type";
+    int order_keys = FALSE;
 
     /* Parse command-line options */
     while((c = getopt_long(argc, argv, "f:h", long_options, &option_index)) != -1)
@@ -111,6 +121,9 @@ int main(int argc, char *argv[])
             case '5':
                 type_property_name = optarg;
                 break;
+            case '6':
+                order_keys = TRUE;
+                break;
             case 'h':
                 print_usage(argv[0]);
                 return 0;
@@ -135,5 +148,5 @@ int main(int argc, char *argv[])
     }
 
     /* Execute operation */
-    return pretty_print_file_glib(argv[optind], format, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name);
+    return pretty_print_file_glib(argv[optind], format, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, order_keys);
 }
