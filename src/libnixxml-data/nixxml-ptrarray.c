@@ -115,3 +115,20 @@ void *NixXML_parse_ptr_array(xmlNodePtr element, const char *child_element_name,
 {
     return NixXML_parse_list(element, child_element_name, userdata, NixXML_create_ptr_array, NixXML_add_value_to_ptr_array, parse_object, NixXML_finalize_ptr_array);
 }
+
+xmlChar *NixXML_generate_env_value_from_ptr_array(const void *value, void *userdata, NixXML_GenerateEnvValueFunc generate_value)
+{
+    const void **array = (const void**)value;
+    unsigned int i = 0;
+    xmlChar *result = NULL;
+
+    while(array[i] != NULL)
+    {
+        xmlChar *env = generate_value(array[i], userdata);
+        result = NixXML_append_value_to_list_env_value(result, env);
+        xmlFree(env);
+        i++;
+    }
+
+    return result;
+}

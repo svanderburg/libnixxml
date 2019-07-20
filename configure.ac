@@ -39,6 +39,7 @@ AS_IF([test "x$with_glib" = "xyes"], [
     src/libnixxml-glib.pc
     src/libnixxml-glib/Makefile
     tests/pp-glib/Makefile
+    tests/envtest-glib/Makefile
     ])
     AC_CONFIG_FILES([tests/pp-glib/convert-xml.sh], [chmod +x tests/pp-glib/convert-xml.sh])
 ])
@@ -69,6 +70,7 @@ xsl/Makefile
 tests/Makefile
 tests/draw/Makefile
 tests/generic/Makefile
+tests/envtest/Makefile
 ])
 
 AC_CONFIG_FILES([tests/draw/convert-xml.sh], [chmod +x tests/draw/convert-xml.sh])

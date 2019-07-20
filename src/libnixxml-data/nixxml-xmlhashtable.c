@@ -20,6 +20,7 @@
  */
 
 #include "nixxml-xmlhashtable.h"
+#include <stdlib.h>
 #include "nixxml-xmlhashtable-scanner.h"
 
 void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata)
@@ -209,4 +210,40 @@ void *NixXML_parse_xml_hash_table_simple(xmlNodePtr element, void *userdata, Nix
 void *NixXML_parse_xml_hash_table_verbose(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_ParseObjectFunc parse_object)
 {
     return NixXML_parse_verbose_attrset(element, child_element_name, name_property_name, userdata, NixXML_create_xml_hash_table, parse_object, NixXML_insert_into_xml_hash_table);
+}
+
+/* Generate environment variables functionality */
+
+typedef struct
+{
+    xmlChar **result;
+    unsigned int count;
+    void *userdata;
+    NixXML_GenerateEnvValueFunc generate_value;
+}
+GenerateEnvScannerParams;
+
+static void scanner_generate_env(void *payload, void *data, const xmlChar *name)
+{
+    GenerateEnvScannerParams *params = (GenerateEnvScannerParams*)data;
+
+    params->result = (xmlChar**)realloc(params->result, (params->count + 1) * sizeof(xmlChar*));
+    params->result[params->count] = NixXML_generate_env_variable(name, payload, params->userdata, params->generate_value);
+    params->count++;
+}
+
+xmlChar **NixXML_generate_env_vars_from_xml_hash_table(xmlHashTablePtr hash_table, void *userdata, NixXML_GenerateEnvValueFunc generate_value)
+{
+    GenerateEnvScannerParams params;
+    params.result = NULL;
+    params.count = 0;
+    params.userdata = userdata;
+    params.generate_value = generate_value;
+
+    xmlHashScan(hash_table, scanner_generate_env, &params);
+
+    params.result = (xmlChar**)realloc(params.result, (params.count + 1) * sizeof(xmlChar*));
+    params.result[params.count] = NULL; /* Add NULL termination to the end */
+
+    return params.result;
 }
