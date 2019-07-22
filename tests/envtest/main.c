@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     xmlHashAddEntry(hash_table, (xmlChar*) "list_value", &node_list_value);
 
     /* Compose an environment variables array from the hash table */
-    envvars = NixXML_generate_env_vars_with_generic_data_structures(hash_table);
+    envvars = NixXML_generate_env_vars_generic_ds(hash_table);
 
     /* Executes an external process that consumes and checks the environment variables */
     exit_status = fork_and_check_env_variables(envvars);

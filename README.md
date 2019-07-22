@@ -559,6 +559,39 @@ as well as XML (using simple or verbose notation for attribute sets):
 NixXML_print_generic_expr_verbose_xml(stdout, node, 0, "expr", "elem", "attr", "name", "type", NixXML_print_ptr_array_xml, NixXML_print_xml_hash_table_verbose_xml);
 ```
 
+In the examples shown above, we always have to provide function pointers that
+handle list-like and table-like data structures. In most of the cases, you
+want to use data structures that logically belong together, e.g. when using
+GLib-integration, you always want to use `GPtrArray` for lists and `GHashTable`
+for table-like structures.
+
+The `nixxml-ds.h` and `nixxml-glib.h` modules provide convenience wrappers for
+the generic parsing and printing functions to always use data structures that
+logically belong together.
+
+For example, you can generically parse NixXML nodes, using `GHashTable` for
+attribute sets and `GPtrArray` for lists:
+
+```C
+#include <nixxml-glib.h>
+
+xmlNodePtr element;
+/* Open XML file and obtain root element */
+NixXML_Node *node = NixXML_generic_parse_expr_glib(element, "type", "name", NULL);
+```
+
+Similarly, you can also generically print object trees (in, for example, the
+Nix expression language):
+
+```C
+#include <nixxml-glib.h>
+
+NixXML_print_generic_expr_glib_ordered_nix(stdout, node, 0);
+```
+
+In addition to Nix, you can also print an XML representation in simple or
+verbose mode, and order the keys in the table-like data structure if required.
+
 Generating environment variables
 --------------------------------
 Another sub use case of `libnixxml` is to generate environment variable
@@ -632,7 +665,7 @@ table that is generated with the generic parsing framework:
 ```C
 #include <nixxml-ds.h>
 
-xmlChar **envvars = NixXML_generate_env_vars_with_generic_data_structures(hash_table);
+xmlChar **envvars = NixXML_generate_env_vars_generic_ds(hash_table);
 ```
 
 Command-line utilities

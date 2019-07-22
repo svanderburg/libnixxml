@@ -26,6 +26,7 @@
 #include "nixxml-print-generic-xml.h"
 #include "nixxml-ptrarray.h"
 #include "nixxml-xmlhashtable.h"
+#include "nixxml-ds.h"
 
 static NixXML_Node *generic_parse_expr(xmlNodePtr element)
 {
@@ -115,21 +116,21 @@ int pretty_print_file(const char *config_file, FormatType format, int indent_lev
                 break;
             case FORMAT_NIX:
                 if(order_keys)
-                    NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_ptr_array_elements_nix, NixXML_print_xml_hash_table_attributes_nix);
+                    NixXML_print_generic_expr_ds_ordered_nix(stdout, node, indent_level);
                 else
-                    NixXML_print_generic_expr_nix(stdout, node, indent_level, NixXML_print_ptr_array_elements_nix, NixXML_print_xml_hash_table_ordered_attributes_nix);
+                    NixXML_print_generic_expr_ds_nix(stdout, node, indent_level);
                 break;
             case FORMAT_VERBOSE_XML:
                 if(order_keys)
-                    NixXML_print_generic_expr_verbose_xml(stdout, node, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_verbose_ordered_attributes_xml);
+                    NixXML_print_generic_expr_ds_verbose_ordered_xml(stdout, node, indent_level, root_element_name, attr_element_name, name_property_name, list_element_name, type_property_name);
                 else
-                    NixXML_print_generic_expr_verbose_xml(stdout, node, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_verbose_attributes_xml);
+                    NixXML_print_generic_expr_ds_verbose_xml(stdout, node, indent_level, root_element_name, attr_element_name, name_property_name, list_element_name, type_property_name);
                 break;
             case FORMAT_SIMPLE_XML:
                 if(order_keys)
-                    NixXML_print_generic_expr_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name, NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_simple_ordered_attributes_xml);
+                    NixXML_print_generic_expr_ds_simple_ordered_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name);
                 else
-                    NixXML_print_generic_expr_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name, NixXML_print_ptr_array_elements_xml, NixXML_print_xml_hash_table_simple_attributes_xml);
+                    NixXML_print_generic_expr_ds_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name);
                 break;
         }
 
