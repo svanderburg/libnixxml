@@ -157,34 +157,36 @@ static int check_figures(xmlHashTablePtr figures_table)
 
 int check_drawspec(const DrawSpec *drawSpec)
 {
+    int status = TRUE;
+
     if(drawSpec->dimensions == NULL)
     {
         fprintf(stderr, "No dimensions specified!\n");
-        return FALSE;
+        status = FALSE;
     }
 
     if(!check_dimensions(drawSpec->dimensions))
-        return FALSE;
+        status = FALSE;
 
     if(drawSpec->figures != NULL && !check_figures(drawSpec->figures))
-        return FALSE;
+        status = FALSE;
 
     if(!check_draw_commands(drawSpec->draw, drawSpec->figures))
-        return FALSE;
+        status = FALSE;
 
-    return TRUE;
+    return status;
 }
 
 /* Print Nix functionality */
 
 static void print_figure_table_nix(FILE *file, const void *value, const int indent_level, void *userdata)
 {
-    NixXML_print_xml_hash_table_nix(file, (xmlHashTablePtr)value, indent_level, userdata, print_figure_nix);
+    NixXML_print_xml_hash_table_nix(file, (xmlHashTablePtr)value, indent_level, userdata, (NixXML_PrintValueFunc)print_figure_nix);
 }
 
 static void print_draw_list_nix(FILE *file, const void *value, const int indent_level, void *userdata)
 {
-    NixXML_print_ptr_array_nix(file, (const void **)value, indent_level, userdata, print_draw_command_nix);
+    NixXML_print_ptr_array_nix(file, (const void **)value, indent_level, userdata, (NixXML_PrintValueFunc)print_draw_command_nix);
 }
 
 static void print_meta_table_nix(FILE *file, const void *value, const int indent_level, void *userdata)
@@ -200,28 +202,28 @@ static void print_tags_list_nix(FILE *file, const void *value, const int indent_
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
     DrawSpec *drawSpec = (DrawSpec*)value;
-    NixXML_print_attribute_nix(file, "dimensions", drawSpec->dimensions, indent_level, userdata, print_dimensions_nix);
+    NixXML_print_attribute_nix(file, "dimensions", drawSpec->dimensions, indent_level, userdata, (NixXML_PrintValueFunc)print_dimensions_nix);
     NixXML_print_attribute_nix(file, "figures", drawSpec->figures, indent_level, userdata, print_figure_table_nix);
     NixXML_print_attribute_nix(file, "draw", drawSpec->draw, indent_level, userdata, print_draw_list_nix);
     NixXML_print_attribute_nix(file, "meta", drawSpec->meta, indent_level, userdata, print_meta_table_nix);
     NixXML_print_attribute_nix(file, "tags", drawSpec->tags, indent_level, userdata, print_tags_list_nix);
 }
 
-void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec)
+void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata)
 {
-    NixXML_print_attrset_nix(file, drawSpec, 0, NULL, print_attributes_nix, NULL);
+    NixXML_print_attrset_nix(file, drawSpec, indent_level, userdata, print_attributes_nix, NULL);
 }
 
 /* Print XML functionality */
 
 static void print_figure_table_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, type_property_name, userdata, print_figure_xml);
+    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_figure_xml);
 }
 
 static void print_draw_list_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
 {
-    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, type_property_name, userdata, print_draw_command_xml);
+    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_draw_command_xml);
 }
 
 static void print_meta_table_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
@@ -237,17 +239,17 @@ static void print_tags_list_xml(FILE *file, const void *value, const int indent_
 static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     DrawSpec *drawSpec = (DrawSpec*)value;
-    NixXML_print_simple_attribute_xml(file, "dimensions", drawSpec->dimensions, indent_level, type_property_name, userdata, print_dimensions_xml);
+    NixXML_print_simple_attribute_xml(file, "dimensions", drawSpec->dimensions, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_dimensions_xml);
     NixXML_print_simple_attribute_xml(file, "figures", drawSpec->figures, indent_level, type_property_name, userdata, print_figure_table_xml);
     NixXML_print_simple_attribute_xml(file, "draw", drawSpec->draw, indent_level, type_property_name, userdata, print_draw_list_xml);
     NixXML_print_simple_attribute_xml(file, "meta", drawSpec->meta, indent_level, type_property_name, userdata, print_meta_table_xml);
     NixXML_print_simple_attribute_xml(file, "tags", drawSpec->tags, indent_level, type_property_name, userdata, print_tags_list_xml);
 }
 
-void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec)
+void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata)
 {
     NixXML_print_open_root_tag(file, "drawSpec");
-    NixXML_print_simple_attrset_xml(file, drawSpec, 0, NULL, NULL, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, drawSpec, indent_level, type_property_name, userdata, print_attributes_xml, NULL);
     NixXML_print_close_root_tag(file, "drawSpec");
 }
 

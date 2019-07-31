@@ -70,25 +70,27 @@ void delete_draw_command(DrawCommand *drawCommand)
 
 int check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table)
 {
+    int status = TRUE;
+
     if(drawCommand->x < 0)
     {
         fprintf(stderr, "The draw command x coordinator should be 0 or greater\n");
-        return FALSE;
+        status = FALSE;
     }
 
     if(drawCommand->y < 0)
     {
         fprintf(stderr, "The draw command y coordinator should be 0 or greater\n");
-        return FALSE;
+        status = FALSE;
     }
 
     if(xmlHashLookup(figures_table, drawCommand->figure) == NULL)
     {
         fprintf(stderr, "Dangling reference from draw command to figure: %s\n", drawCommand->figure);
-        return FALSE;
+        status = FALSE;
     }
 
-    return TRUE;
+    return status;
 }
 
 /* Nix print functionality */
@@ -101,7 +103,7 @@ static void print_attributes_nix(FILE *file, const void *value, const int indent
     NixXML_print_attribute_nix(file, "y", &drawCommand->y, indent_level, userdata, NixXML_print_int_nix);
 }
 
-void print_draw_command_nix(FILE *file, const void *drawCommand, const int indent_level, void *userdata)
+void print_draw_command_nix(FILE *file, const DrawCommand *drawCommand, const int indent_level, void *userdata)
 {
     NixXML_print_attrset_nix(file, drawCommand, indent_level, userdata, print_attributes_nix, NULL);
 }
@@ -116,7 +118,7 @@ static void print_attributes_xml(FILE *file, const void *value, const int indent
     NixXML_print_simple_attribute_xml(file, "y", &drawCommand->y, indent_level, type_property_name, userdata, NixXML_print_int_xml);
 }
 
-void print_draw_command_xml(FILE *file, const void *drawCommand, const int indent_level, const char *type_property_name, void *userdata)
+void print_draw_command_xml(FILE *file, const DrawCommand *drawCommand, const int indent_level, const char *type_property_name, void *userdata)
 {
     NixXML_print_simple_attrset_xml(file, drawCommand, indent_level, type_property_name, userdata, print_attributes_xml, NULL);
 }

@@ -68,9 +68,9 @@ int main(int argc, char *argv[])
             /* Execute the desired operation */
 
             if(strcmp(output_type, "nix") == 0)
-                print_drawspec_nix(stdout, drawSpec);
+                print_drawspec_nix(stdout, drawSpec, 0, NULL);
             else if(strcmp(output_type, "xml") == 0)
-                print_drawspec_xml(stdout, drawSpec);
+                print_drawspec_xml(stdout, drawSpec, 0, NULL, NULL);
             else
                 draw_image_from_drawspec(stdout, drawSpec);
 

@@ -52,25 +52,26 @@ void *parse_dimensions(xmlNodePtr element, void *userdata)
 
 void delete_dimensions(Dimensions *dimensions)
 {
-    if(dimensions != NULL)
-        free(dimensions);
+    free(dimensions);
 }
 
 int check_dimensions(const Dimensions *dimensions)
 {
+    int status = TRUE;
+
     if(dimensions->width <= 0)
     {
         fprintf(stderr, "ERROR: dimensions width should be greater than 0!\n");
-        return FALSE;
+        status = FALSE;
     }
 
     if(dimensions->height <= 0)
     {
         fprintf(stderr, "ERROR: dimensions height should be greater than 0!\n");
-        return FALSE;
+        status = FALSE;
     }
 
-    return TRUE;
+    return status;
 }
 
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
@@ -80,9 +81,9 @@ static void print_attributes_nix(FILE *file, const void *value, const int indent
     NixXML_print_attribute_nix(file, "height", &dimensions->height, indent_level, userdata, NixXML_print_int_nix);
 }
 
-void print_dimensions_nix(FILE *file, const void *figure, const int indent_level, void *userdata)
+void print_dimensions_nix(FILE *file, const Dimensions *dimensions, const int indent_level, void *userdata)
 {
-    NixXML_print_attrset_nix(file, figure, indent_level, userdata, print_attributes_nix, NULL);
+    NixXML_print_attrset_nix(file, dimensions, indent_level, userdata, print_attributes_nix, NULL);
 }
 
 static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_attribute_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
@@ -92,9 +93,9 @@ static void print_attributes_xml(FILE *file, const void *value, const int indent
     NixXML_print_simple_attribute_xml(file, "height", &dimensions->height, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
 }
 
-void print_dimensions_xml(FILE *file, const void *figure, const int indent_level, const char *type_attribute_name, void *userdata)
+void print_dimensions_xml(FILE *file, const Dimensions *dimensions, const int indent_level, const char *type_attribute_name, void *userdata)
 {
-    NixXML_print_simple_attrset_xml(file, figure, indent_level, type_attribute_name, userdata, print_attributes_xml, NULL);
+    NixXML_print_simple_attrset_xml(file, dimensions, indent_level, type_attribute_name, userdata, print_attributes_xml, NULL);
 }
 
 gdImagePtr allocate_image_with_dimensions(const Dimensions *dimensions)

@@ -74,25 +74,27 @@ void delete_figure(Figure *figure)
 
 int check_figure(const Figure *figure)
 {
+    int status = TRUE;
+
     if(xmlStrcmp(figure->type, (xmlChar*) "rectangle") != 0 && xmlStrcmp(figure->type, (xmlChar *) "circle") != 0)
     {
         fprintf(stderr, "Unknown figure type: %s\n", figure->type);
-        return FALSE;
+        status = FALSE;
     }
 
     if(figure->width < 0)
     {
         fprintf(stderr, "The figure width should be 0 or greater\n");
-        return FALSE;
+        status = FALSE;
     }
 
     if(figure->height < 0)
     {
         fprintf(stderr, "The figure height should be 0 or greater\n");
-        return FALSE;
+        status = FALSE;
     }
 
-    return TRUE;
+    return status;
 }
 
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
@@ -104,7 +106,7 @@ static void print_attributes_nix(FILE *file, const void *value, const int indent
     NixXML_print_attribute_nix(file, "radius", &figure->radius, indent_level, userdata, NixXML_print_int_nix);
 }
 
-void print_figure_nix(FILE *file, const void *figure, const int indent_level, void *userdata)
+void print_figure_nix(FILE *file, const Figure *figure, const int indent_level, void *userdata)
 {
     NixXML_print_attrset_nix(file, figure, indent_level, userdata, print_attributes_nix, NULL);
 }
@@ -118,7 +120,7 @@ static void print_attributes_xml(FILE *file, const void *value, const int indent
     NixXML_print_simple_attribute_xml(file, "radius", &figure->radius, indent_level, type_attribute_name, userdata, NixXML_print_int_xml);
 }
 
-void print_figure_xml(FILE *file, const void *figure, const int indent_level, const char *type_property_name, void *userdata)
+void print_figure_xml(FILE *file, const Figure *figure, const int indent_level, const char *type_property_name, void *userdata)
 {
     NixXML_print_simple_attrset_xml(file, figure, indent_level, type_property_name, userdata, print_attributes_xml, NULL);
 }
