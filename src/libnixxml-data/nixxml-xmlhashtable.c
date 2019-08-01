@@ -23,10 +23,71 @@
 #include <stdlib.h>
 #include "nixxml-xmlhashtable-scanner.h"
 
+#define TRUE 1
+#define FALSE 0
+
 void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata)
 {
     unsigned long numOfElements = xmlChildElementCount(element);
     return xmlHashCreate(numOfElements);
+}
+
+typedef struct
+{
+    int result;
+    NixXML_CheckXMLHashTableValueFunc check_function;
+}
+CheckParams;
+
+static void scanner_check(void *payload, void *data, const xmlChar *name)
+{
+    CheckParams *params = (CheckParams*)data;
+    if(!params->check_function(payload))
+        params->result = FALSE;
+}
+
+int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function)
+{
+    CheckParams params;
+    params.result = TRUE;
+    params.check_function = check_function;
+
+    xmlHashScan(hash_table, scanner_check, &params);
+    return params.result;
+}
+
+typedef struct
+{
+    int result;
+    xmlHashTablePtr hash_table2;
+    NixXML_CompareXMLHashTableValueFunc compare_function;
+}
+CompareParams;
+
+static void scanner_compare(void *payload, void *data, const xmlChar *name)
+{
+    CompareParams *params = (CompareParams*)data;
+    void *value = xmlHashLookup(params->hash_table2, name);
+
+    if(value == NULL)
+        params->result = FALSE;
+    else if(!params->compare_function(value, payload))
+        params->result = FALSE;
+}
+
+int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function)
+{
+    if(xmlHashSize(hash_table1) == xmlHashSize(hash_table2))
+    {
+        CompareParams params;
+        params.result = TRUE;
+        params.compare_function = compare_function;
+
+        xmlHashScan(hash_table1, scanner_compare, &params);
+        return params.result;
+    }
+    else
+        return FALSE;
 }
 
 void NixXML_insert_into_xml_hash_table(void *table, const xmlChar *key, void *value, void *userdata)

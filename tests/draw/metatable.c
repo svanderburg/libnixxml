@@ -19,36 +19,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __DRAWSPEC_H
-#define __DRAWSPEC_H
-#include <libxml/parser.h>
-#include "dimensions.h"
-#include "drawcommand.h"
+#include "metatable.h"
+#include <nixxml-xmlhashtable.h>
 
-typedef struct
+void *parse_meta_table(xmlNodePtr element, void *userdata)
 {
-    Dimensions *dimensions;
-
-    xmlHashTablePtr figures_table;
-
-    DrawCommand **draw_array;
-
-    xmlHashTablePtr meta_table;
-
-    xmlChar **tags_array;
+    return NixXML_parse_xml_hash_table_simple(element, userdata, NixXML_parse_value);
 }
-DrawSpec;
 
-DrawSpec *open_drawspec(const char *filename);
+static void meta_deallocator(void *payload, const xmlChar *name)
+{
+    xmlFree(payload);
+}
 
-void delete_drawspec(DrawSpec *drawSpec);
+void delete_meta_table(xmlHashTablePtr meta_table)
+{
+    xmlHashFree(meta_table, meta_deallocator);
+}
 
-int check_drawspec(const DrawSpec *drawSpec);
+void print_meta_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata)
+{
+    NixXML_print_xml_hash_table_nix(file, hash_table, indent_level, userdata, NixXML_print_string_nix);
+}
 
-void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata);
-
-void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata);
-
-void draw_image_from_drawspec(FILE *file, const DrawSpec *drawSpec);
-
-#endif
+void print_meta_table_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata)
+{
+    NixXML_print_xml_hash_table_simple_xml(file, hash_table, indent_level, type_property_name, userdata, NixXML_print_string_xml);
+}

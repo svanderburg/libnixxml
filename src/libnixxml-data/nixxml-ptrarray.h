@@ -27,7 +27,20 @@
 #include "nixxml-print-xml.h"
 #include "nixxml-generate-env.h"
 
+/**
+ * Deletes an element from a pointer array.
+ *
+ * @param element Element to delete
+ */
 typedef void (*NixXML_DeletePtrArrayElementFunc) (void *element);
+
+/**
+ * Checks whether an element in a pointer array is valid.
+ *
+ * @param element Element to check
+ * @return TRUE if the value is valid, else FALSE
+ */
+typedef int (*NixXML_CheckPtrArrayElementFunc) (void *element);
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,11 +84,19 @@ void *NixXML_finalize_ptr_array(void *list, void *userdata);
 void NixXML_delete_ptr_array(void **array, NixXML_DeletePtrArrayElementFunc delete_element);
 
 /**
- * Deletes a pointer array and the values it refers to.by executing free()
+ * Deletes a pointer array and the values it refers to by executing free()
  *
  * @param array Pointer array to delete
  */
 void NixXML_delete_values_array(void **array);
+
+/**
+ * Checks the validity of all members in the pointer array.
+ *
+ * @param array Pointer array to check
+ * @return TRUE if all members are valid, else FALSE
+ */
+int NixXML_check_ptr_array(void **array, NixXML_CheckPtrArrayElementFunc check_element);
 
 /**
  * Prints a Nix representation of all elements in the array.

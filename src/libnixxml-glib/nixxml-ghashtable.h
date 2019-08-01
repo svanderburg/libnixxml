@@ -26,6 +26,30 @@
 #include "nixxml-print-xml.h"
 #include "nixxml-generate-env.h"
 
+/**
+ * Function that deletes a value from a hash table
+ *
+ * @param value Value to delete
+ */
+typedef void (*NixXML_DeleteGHashTableValueFunc) (gpointer value);
+
+/**
+ * Function that checks the validity of an element in a hash table
+ *
+ * @param value Value to check
+ * @return TRUE if the value is valid, else FALSE
+ */
+typedef int (*NixXML_CheckGHashTableValueFunc) (const gpointer value);
+
+/**
+ * Function that compares two values with identical keys in an hash table.
+ *
+ * @param left Value to check
+ * @param right Value to check
+ * @return TRUE if the two values are identical
+ */
+typedef int (*NixXML_CompareGHashTableValueFunc) (const gpointer left, const gpointer right);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -39,6 +63,33 @@ extern "C" {
  * @return A pointer to a GHashTable
  */
 void *NixXML_create_g_hash_table(xmlNodePtr element, void *userdata);
+
+/**
+ * Deletes a GHashTable and all its values
+ *
+ * @param hash_table A GHashTable instance
+ * @param delete_function Function that deletes a hash table value
+ */
+void NixXML_delete_g_hash_table(GHashTable *hash_table, NixXML_DeleteGHashTableValueFunc delete_function);
+
+/**
+ * Checks whether the content of an GHashTable is valid.
+ *
+ * @param hash_table A GHashTable instance
+ * @param check_function Function that checks the validity of each entry
+ * @return TRUE if all members are valid, else FALSE
+ */
+int NixXML_check_g_hash_table(GHashTable *hash_table, NixXML_CheckGHashTableValueFunc check_function);
+
+/**
+ * Checks whether two xmlHashTables and their content are equal.
+ *
+ * @param hash_table1 A GHashTable instance
+ * @param hash_table2 A GHashTable instance
+ * @param compare_function Function that compares two members of a hash table with the same keys
+ * @return TRUE if the hash tables have the same content, else FALSE
+ */
+int NixXML_compare_g_hash_tables(GHashTable *hash_table1, GHashTable *hash_table2, NixXML_CompareGHashTableValueFunc compare_function);
 
 /**
  * Inserts a value into a GHashTable

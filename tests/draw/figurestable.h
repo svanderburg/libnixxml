@@ -19,36 +19,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __DRAWSPEC_H
-#define __DRAWSPEC_H
+#ifndef __FIGURESTABLE_H
+#define __FIGURESTABLE_H
+#include "figure.h"
 #include <libxml/parser.h>
-#include "dimensions.h"
-#include "drawcommand.h"
 
-typedef struct
-{
-    Dimensions *dimensions;
+void *parse_figures_table(xmlNodePtr element, void *userdata);
 
-    xmlHashTablePtr figures_table;
+void delete_figures_table(xmlHashTablePtr figures_table);
 
-    DrawCommand **draw_array;
+int check_figures_table(xmlHashTablePtr figures_table);
 
-    xmlHashTablePtr meta_table;
+void print_figures_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata);
 
-    xmlChar **tags_array;
-}
-DrawSpec;
-
-DrawSpec *open_drawspec(const char *filename);
-
-void delete_drawspec(DrawSpec *drawSpec);
-
-int check_drawspec(const DrawSpec *drawSpec);
-
-void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata);
-
-void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata);
-
-void draw_image_from_drawspec(FILE *file, const DrawSpec *drawSpec);
+void print_figures_table_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata);
 
 #endif

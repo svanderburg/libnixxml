@@ -19,36 +19,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __DRAWSPEC_H
-#define __DRAWSPEC_H
-#include <libxml/parser.h>
-#include "dimensions.h"
-#include "drawcommand.h"
+#include "tagsarray.h"
+#include <nixxml-ptrarray.h>
 
-typedef struct
+void *parse_tags_array(xmlNodePtr element, void *userdata)
 {
-    Dimensions *dimensions;
-
-    xmlHashTablePtr figures_table;
-
-    DrawCommand **draw_array;
-
-    xmlHashTablePtr meta_table;
-
-    xmlChar **tags_array;
+    return NixXML_parse_ptr_array(element, "elem", userdata, NixXML_parse_value);
 }
-DrawSpec;
 
-DrawSpec *open_drawspec(const char *filename);
+void delete_tags_array(xmlChar **tags_array)
+{
+    NixXML_delete_values_array((void**)tags_array);
+}
 
-void delete_drawspec(DrawSpec *drawSpec);
+void print_tags_array_nix(FILE *file, const void **array, const int indent_level, void *userdata)
+{
+    NixXML_print_ptr_array_nix(file, array, indent_level, userdata, NixXML_print_string_nix);
+}
 
-int check_drawspec(const DrawSpec *drawSpec);
-
-void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata);
-
-void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata);
-
-void draw_image_from_drawspec(FILE *file, const DrawSpec *drawSpec);
-
-#endif
+void print_tags_array_xml(FILE *file, const void **array, const int indent_level, const char *type_property_name, void *userdata)
+{
+    NixXML_print_ptr_array_xml(file, array, "elem", indent_level, type_property_name, userdata, NixXML_print_string_xml);
+}

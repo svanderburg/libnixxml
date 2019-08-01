@@ -22,6 +22,9 @@
 #include "nixxml-ptrarray.h"
 #include <stdlib.h>
 
+#define TRUE 1
+#define FALSE 0
+
 typedef struct
 {
     unsigned int count;
@@ -70,6 +73,21 @@ void NixXML_delete_ptr_array(void **array, NixXML_DeletePtrArrayElementFunc dele
 
         free(array);
     }
+}
+
+int NixXML_check_ptr_array(void **array, NixXML_CheckPtrArrayElementFunc check_element)
+{
+    unsigned int i = 0;
+    int result = TRUE;
+
+    while(array[i] != NULL)
+    {
+        if(!check_element(array[i]))
+            return FALSE;
+        i++;
+    }
+
+    return result;
 }
 
 void NixXML_delete_values_array(void **array)

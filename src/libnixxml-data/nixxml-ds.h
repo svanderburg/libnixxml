@@ -30,6 +30,14 @@ extern "C" {
 #endif
 
 /**
+ * Recursively deletes a node and all its node references including data
+ * structures managed by this sub library.
+ *
+ * @param node Pointer to an NixXML_Node instance
+ */
+void NixXML_delete_node_ds(NixXML_Node *node);
+
+/**
  * Recursively parses a type-annotated XML document using xmlHashTable structs
  * for representing attribute sets and pointer arrays for representing lists.
  *

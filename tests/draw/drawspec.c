@@ -28,7 +28,10 @@
 #include "nixxml-print-xml.h"
 #include "nixxml-ptrarray.h"
 #include "nixxml-xmlhashtable.h"
-#include "figure.h"
+#include "figurestable.h"
+#include "drawarray.h"
+#include "metatable.h"
+#include "tagsarray.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -38,25 +41,25 @@ static void *create_drawspec(xmlNodePtr element, void *userdata)
     return calloc(1, sizeof(DrawSpec));
 }
 
-static void parse_and_insert_drawspec_attribute(xmlNodePtr element, void *table, const xmlChar *key, void *userdata)
+static void parse_and_insert_drawspec_attributes(xmlNodePtr element, void *table, const xmlChar *key, void *userdata)
 {
     DrawSpec *drawSpec = (DrawSpec*)table;
 
     if(xmlStrcmp(element->name, (xmlChar*) "dimensions") == 0)
         drawSpec->dimensions = (Dimensions*)parse_dimensions(element, userdata);
     else if(xmlStrcmp(element->name, (xmlChar*) "figures") == 0)
-        drawSpec->figures = (xmlHashTablePtr)NixXML_parse_xml_hash_table_simple(element, userdata, parse_figure);
+        drawSpec->figures_table = (xmlHashTablePtr)parse_figures_table(element, userdata);
     else if(xmlStrcmp(key, (xmlChar*) "draw") == 0)
-        drawSpec->draw = (DrawCommand**)NixXML_parse_ptr_array(element, "elem", userdata, parse_draw_command);
+        drawSpec->draw_array = (DrawCommand**)parse_draw_array(element, userdata);
     else if(xmlStrcmp(key, (xmlChar*) "meta") == 0)
-        drawSpec->meta = (xmlHashTablePtr)NixXML_parse_xml_hash_table_simple(element, userdata, NixXML_parse_value);
+        drawSpec->meta_table = (xmlHashTablePtr)parse_meta_table(element, userdata);
     else if(xmlStrcmp(key, (xmlChar*) "tags") == 0)
-        drawSpec->tags = (xmlChar**)NixXML_parse_ptr_array(element, "elem", userdata, NixXML_parse_value);
+        drawSpec->tags_array = (xmlChar**)parse_tags_array(element, userdata);
 }
 
 static void *parse_drawspec(xmlNodePtr element, void *userdata)
 {
-    return NixXML_parse_simple_heterogeneous_attrset(element, userdata, create_drawspec, parse_and_insert_drawspec_attribute);
+    return NixXML_parse_simple_heterogeneous_attrset(element, userdata, create_drawspec, parse_and_insert_drawspec_attributes);
 }
 
 DrawSpec *open_drawspec(const char *filename)
@@ -99,61 +102,20 @@ DrawSpec *open_drawspec(const char *filename)
     return drawSpec;
 }
 
-static void figure_deallocator(void *payload, const xmlChar *name)
-{
-    delete_figure((Figure*)payload);
-}
-
-static void meta_deallocator(void *payload, const xmlChar *name)
-{
-    xmlFree(payload);
-}
-
 void delete_drawspec(DrawSpec *drawSpec)
 {
     if(drawSpec != NULL)
     {
         delete_dimensions(drawSpec->dimensions);
-        xmlHashFree(drawSpec->figures, figure_deallocator);
-        NixXML_delete_ptr_array((void**)drawSpec->draw, (NixXML_DeletePtrArrayElementFunc)delete_draw_command);
-        xmlHashFree(drawSpec->meta, meta_deallocator);
-        NixXML_delete_values_array((void**)drawSpec->tags);
-
+        delete_figures_table(drawSpec->figures_table);
+        delete_draw_array(drawSpec->draw_array);
+        delete_meta_table(drawSpec->meta_table);
+        delete_tags_array(drawSpec->tags_array);
         free(drawSpec);
     }
 }
 
 /* Check functionality */
-
-static int check_draw_commands(DrawCommand **draw, xmlHashTablePtr figures_table)
-{
-    unsigned int i = 0;
-
-    while(draw[i] != NULL)
-    {
-        if(!check_draw_command(draw[i], figures_table))
-            return FALSE;
-
-        i++;
-    }
-
-    return TRUE;
-}
-
-static void scanner_check_figure(void *payload, void *data, const xmlChar *name)
-{
-    int *status = (int*)data;
-
-    if(!check_figure((Figure*)payload))
-        *status = FALSE;
-}
-
-static int check_figures(xmlHashTablePtr figures_table)
-{
-    int status = TRUE;
-    xmlHashScan(figures_table, scanner_check_figure, &status);
-    return status;
-}
 
 int check_drawspec(const DrawSpec *drawSpec)
 {
@@ -168,10 +130,10 @@ int check_drawspec(const DrawSpec *drawSpec)
     if(!check_dimensions(drawSpec->dimensions))
         status = FALSE;
 
-    if(drawSpec->figures != NULL && !check_figures(drawSpec->figures))
+    if(drawSpec->figures_table != NULL && !check_figures_table(drawSpec->figures_table))
         status = FALSE;
 
-    if(!check_draw_commands(drawSpec->draw, drawSpec->figures))
+    if(!check_draw_array(drawSpec->draw_array, drawSpec->figures_table))
         status = FALSE;
 
     return status;
@@ -179,34 +141,14 @@ int check_drawspec(const DrawSpec *drawSpec)
 
 /* Print Nix functionality */
 
-static void print_figure_table_nix(FILE *file, const void *value, const int indent_level, void *userdata)
-{
-    NixXML_print_xml_hash_table_nix(file, (xmlHashTablePtr)value, indent_level, userdata, (NixXML_PrintValueFunc)print_figure_nix);
-}
-
-static void print_draw_list_nix(FILE *file, const void *value, const int indent_level, void *userdata)
-{
-    NixXML_print_ptr_array_nix(file, (const void **)value, indent_level, userdata, (NixXML_PrintValueFunc)print_draw_command_nix);
-}
-
-static void print_meta_table_nix(FILE *file, const void *value, const int indent_level, void *userdata)
-{
-    NixXML_print_xml_hash_table_nix(file, (xmlHashTablePtr)value, indent_level, userdata, NixXML_print_string_nix);
-}
-
-static void print_tags_list_nix(FILE *file, const void *value, const int indent_level, void *userdata)
-{
-    NixXML_print_ptr_array_nix(file, (const void **)value, indent_level, userdata, NixXML_print_string_nix);
-}
-
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
     DrawSpec *drawSpec = (DrawSpec*)value;
     NixXML_print_attribute_nix(file, "dimensions", drawSpec->dimensions, indent_level, userdata, (NixXML_PrintValueFunc)print_dimensions_nix);
-    NixXML_print_attribute_nix(file, "figures", drawSpec->figures, indent_level, userdata, print_figure_table_nix);
-    NixXML_print_attribute_nix(file, "draw", drawSpec->draw, indent_level, userdata, print_draw_list_nix);
-    NixXML_print_attribute_nix(file, "meta", drawSpec->meta, indent_level, userdata, print_meta_table_nix);
-    NixXML_print_attribute_nix(file, "tags", drawSpec->tags, indent_level, userdata, print_tags_list_nix);
+    NixXML_print_attribute_nix(file, "figures", drawSpec->figures_table, indent_level, userdata, (NixXML_PrintValueFunc)print_figures_table_nix);
+    NixXML_print_attribute_nix(file, "draw", drawSpec->draw_array, indent_level, userdata, (NixXML_PrintValueFunc)print_draw_array_nix);
+    NixXML_print_attribute_nix(file, "meta", drawSpec->meta_table, indent_level, userdata, (NixXML_PrintValueFunc)print_meta_table_nix);
+    NixXML_print_attribute_nix(file, "tags", drawSpec->tags_array, indent_level, userdata, (NixXML_PrintValueFunc)print_tags_array_nix);
 }
 
 void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata)
@@ -216,34 +158,14 @@ void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_l
 
 /* Print XML functionality */
 
-static void print_figure_table_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
-{
-    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_figure_xml);
-}
-
-static void print_draw_list_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
-{
-    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_draw_command_xml);
-}
-
-static void print_meta_table_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
-{
-    NixXML_print_xml_hash_table_simple_xml(file, (xmlHashTablePtr)value, indent_level, type_property_name, userdata, NixXML_print_string_xml);
-}
-
-static void print_tags_list_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata)
-{
-    NixXML_print_ptr_array_xml(file, (const void **)value, "elem", indent_level, type_property_name, userdata, NixXML_print_string_xml);
-}
-
 static void print_attributes_xml(FILE *file, const void *value, const int indent_level, const char *type_property_name, void *userdata, NixXML_PrintXMLValueFunc print_value)
 {
     DrawSpec *drawSpec = (DrawSpec*)value;
     NixXML_print_simple_attribute_xml(file, "dimensions", drawSpec->dimensions, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_dimensions_xml);
-    NixXML_print_simple_attribute_xml(file, "figures", drawSpec->figures, indent_level, type_property_name, userdata, print_figure_table_xml);
-    NixXML_print_simple_attribute_xml(file, "draw", drawSpec->draw, indent_level, type_property_name, userdata, print_draw_list_xml);
-    NixXML_print_simple_attribute_xml(file, "meta", drawSpec->meta, indent_level, type_property_name, userdata, print_meta_table_xml);
-    NixXML_print_simple_attribute_xml(file, "tags", drawSpec->tags, indent_level, type_property_name, userdata, print_tags_list_xml);
+    NixXML_print_simple_attribute_xml(file, "figures", drawSpec->figures_table, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_figures_table_xml);
+    NixXML_print_simple_attribute_xml(file, "draw", drawSpec->draw_array, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_draw_array_xml);
+    NixXML_print_simple_attribute_xml(file, "meta", drawSpec->meta_table, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_meta_table_xml);
+    NixXML_print_simple_attribute_xml(file, "tags", drawSpec->tags_array, indent_level, type_property_name, userdata, (NixXML_PrintXMLValueFunc)print_tags_array_xml);
 }
 
 void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata)
@@ -262,9 +184,9 @@ void draw_image_from_drawspec(FILE *file, const DrawSpec *drawSpec)
     /* Execute draw commands */
     unsigned int i = 0;
 
-    while(drawSpec->draw[i] != NULL)
+    while(drawSpec->draw_array[i] != NULL)
     {
-        execute_draw_command(drawSpec->draw[i], drawSpec->figures, image);
+        execute_draw_command(drawSpec->draw_array[i], drawSpec->figures_table, image);
         i++;
     }
 

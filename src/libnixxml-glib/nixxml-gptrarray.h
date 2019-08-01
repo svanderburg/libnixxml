@@ -26,7 +26,20 @@
 #include "nixxml-print-xml.h"
 #include "nixxml-generate-env.h"
 
-typedef void (*NixXML_DeletePtrArrayElementFunc) (void *element);
+/**
+ * Deletes an element from a GPtrArray.
+ *
+ * @param element Element to delete
+ */
+typedef void (*NixXML_DeleteGPtrArrayElementFunc) (gpointer element);
+
+/**
+ * Checks whether an element in a GPtrArray is valid.
+ *
+ * @param element Element to check
+ * @return TRUE if the value is valid, else FALSE
+ */
+typedef int (*NixXML_CheckGPtrArrayElementFunc) (const gpointer element);
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,14 +80,22 @@ void *NixXML_finalize_g_ptr_array(void *list, void *userdata);
  * @param array GPtrArray array to delete
  * @param delete_element Pointer to a function that deletes each element
  */
-void NixXML_delete_g_ptr_array(GPtrArray *array, NixXML_DeletePtrArrayElementFunc delete_element);
+void NixXML_delete_g_ptr_array(GPtrArray *array, NixXML_DeleteGPtrArrayElementFunc delete_element);
 
 /**
- * Deletes a pointer array and the values it refers to.by executing free()
+ * Deletes a pointer array and the values it refers to by executing free()
  *
  * @param array GPtrArray to delete
  */
 void NixXML_delete_g_values_array(GPtrArray *array);
+
+/**
+ * Checks the validity of all members in the GPtrArray.
+ *
+ * @param array GPtrArray array to check
+ * @return TRUE if all members are valid, else FALSE
+ */
+int NixXML_check_g_ptr_array(GPtrArray *array, NixXML_CheckGPtrArrayElementFunc check_element);
 
 /**
  * Prints a Nix representation of all elements in the array.

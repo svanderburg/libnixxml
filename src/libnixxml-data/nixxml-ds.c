@@ -27,6 +27,28 @@
 #include "nixxml-xmlhashtable.h"
 #include "nixxml-ptrarray.h"
 
+static void delete_list(void *list)
+{
+    NixXML_delete_ptr_array((void**)list, (NixXML_DeletePtrArrayElementFunc)NixXML_delete_node_ds);
+}
+
+static void delete_attrset(xmlHashTablePtr hash_table);
+
+static void node_deallocator(void *payload, const xmlChar *name)
+{
+    NixXML_delete_node_ds((NixXML_Node*)payload);
+}
+
+static void delete_attrset(xmlHashTablePtr hash_table)
+{
+    xmlHashFree(hash_table, node_deallocator);
+}
+
+void NixXML_delete_node_ds(NixXML_Node *node)
+{
+    NixXML_delete_node(node, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
+}
+
 void *NixXML_generic_parse_expr_ds(xmlNodePtr element, const char *type_property_name, const char *name_property_name, void *userdata)
 {
     return NixXML_generic_parse_expr(element, type_property_name, name_property_name, NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);

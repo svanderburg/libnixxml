@@ -27,6 +27,23 @@
 #include "nixxml-print-xml.h"
 #include "nixxml-generate-env.h"
 
+/**
+ * Function that checks the validity of an element in a hash table
+ *
+ * @param value Value to check
+ * @return TRUE if the value is valid, else FALSE
+ */
+typedef int (*NixXML_CheckXMLHashTableValueFunc) (const void *value);
+
+/**
+ * Function that compares two values with identical keys in an hash table.
+ *
+ * @param left Value to check
+ * @param right Value to check
+ * @return TRUE if the two values are identical
+ */
+typedef int (*NixXML_CompareXMLHashTableValueFunc) (const void *left, const void *right);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,6 +57,25 @@ extern "C" {
  * @return A pointer to an xmlHashTable
  */
 void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata);
+
+/**
+ * Checks whether the content of an xmlHashTable is valid.
+ *
+ * @param hash_table An xmlHashTable instance
+ * @param check_function Function that checks the validity of each entry
+ * @return TRUE if all members are valid, else FALSE
+ */
+int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function);
+
+/**
+ * Checks whether two xmlHashTables and their content are equal.
+ *
+ * @param hash_table1 An xmlHashTable instance
+ * @param hash_table2 An xmlHashTable instance
+ * @param compare_function Function that compares two members of a hash table with the same keys
+ * @return TRUE if the hash tables have the same content, else FALSE
+ */
+int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function);
 
 /**
  * Inserts a value into an xmlHashTable

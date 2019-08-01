@@ -20,18 +20,7 @@
  */
 
 #include "pretty-print-glib.h"
-
-#include "nixxml-parse-generic.h"
-#include "nixxml-print-generic-nix.h"
-#include "nixxml-print-generic-xml.h"
-#include "nixxml-gptrarray.h"
-#include "nixxml-ghashtable.h"
 #include "nixxml-glib.h"
-
-static NixXML_Node *generic_parse_expr(xmlNodePtr element)
-{
-    return NixXML_generic_parse_expr(element, "type", "name", NixXML_create_g_ptr_array, NixXML_create_g_hash_table, NixXML_add_value_to_g_ptr_array, NixXML_insert_into_g_hash_table, NixXML_finalize_g_ptr_array);
-}
 
 static NixXML_Node *open_expr(const char *filename)
 {
@@ -62,7 +51,7 @@ static NixXML_Node *open_expr(const char *filename)
     }
 
     /* Parse expression */
-    node = generic_parse_expr(node_root);
+    node = NixXML_generic_parse_expr_glib(node_root, "type", "name", NULL);
 
     /* Cleanup */
     xmlFreeDoc(doc);
@@ -71,30 +60,6 @@ static NixXML_Node *open_expr(const char *filename)
 
     /* Return expression data structure */
     return node;
-}
-
-static void delete_node(NixXML_Node *node);
-
-static void delete_list(void *list)
-{
-    NixXML_delete_g_ptr_array((GPtrArray*)list, (NixXML_DeletePtrArrayElementFunc)delete_node);
-}
-
-static void delete_attrset(GHashTable *hash_table)
-{
-    GHashTableIter iter;
-    gpointer key, obj;
-
-    g_hash_table_iter_init(&iter, hash_table);
-    while(g_hash_table_iter_next(&iter, &key, &obj))
-        delete_node((NixXML_Node*)obj);
-
-    g_hash_table_destroy(hash_table);
-}
-
-static void delete_node(NixXML_Node *node)
-{
-    NixXML_delete_node(node, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
 }
 
 int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys)
@@ -134,7 +99,7 @@ int pretty_print_file_glib(const char *config_file, FormatType format, int inden
                 break;
         }
 
-        delete_node(node);
+        NixXML_delete_node_glib(node);
         return 0;
     }
 }

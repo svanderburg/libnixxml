@@ -19,36 +19,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __DRAWSPEC_H
-#define __DRAWSPEC_H
+#ifndef __METATABLE_H
+#define __METATABLE_H
 #include <libxml/parser.h>
-#include "dimensions.h"
-#include "drawcommand.h"
 
-typedef struct
-{
-    Dimensions *dimensions;
+void *parse_meta_table(xmlNodePtr element, void *userdata);
 
-    xmlHashTablePtr figures_table;
+void delete_meta_table(xmlHashTablePtr meta_table);
 
-    DrawCommand **draw_array;
+void print_meta_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata);
 
-    xmlHashTablePtr meta_table;
-
-    xmlChar **tags_array;
-}
-DrawSpec;
-
-DrawSpec *open_drawspec(const char *filename);
-
-void delete_drawspec(DrawSpec *drawSpec);
-
-int check_drawspec(const DrawSpec *drawSpec);
-
-void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata);
-
-void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata);
-
-void draw_image_from_drawspec(FILE *file, const DrawSpec *drawSpec);
+void print_meta_table_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata);
 
 #endif
