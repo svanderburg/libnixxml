@@ -75,7 +75,7 @@ void NixXML_delete_ptr_array(void **array, NixXML_DeletePtrArrayElementFunc dele
     }
 }
 
-int NixXML_check_ptr_array(void **array, NixXML_CheckPtrArrayElementFunc check_element)
+int NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element)
 {
     unsigned int i = 0;
     int result = TRUE;
@@ -84,10 +84,28 @@ int NixXML_check_ptr_array(void **array, NixXML_CheckPtrArrayElementFunc check_e
     {
         if(!check_element(array[i]))
             return FALSE;
+
         i++;
     }
 
     return result;
+}
+
+int NixXML_compare_ptr_arrays(const void **left, const void **right, NixXML_ComparePtrArrayElementFunc compare_element)
+{
+    unsigned int i = 0;
+
+    while(left[i] != NULL)
+    {
+        if(right[i] == NULL)
+            return FALSE;
+        else if(!compare_element(left[i], right[i]))
+            return FALSE;
+
+        i++;
+    }
+
+    return(right[i] == NULL);
 }
 
 void NixXML_delete_values_array(void **array)

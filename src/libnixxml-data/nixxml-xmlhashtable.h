@@ -68,6 +68,14 @@ void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata);
 int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function);
 
 /**
+ * Checks whether an xmlHashTable does not refer to NULL values.
+ *
+ * @param property_table An xmlHashTable instance
+ * @return TRUE if all members are valid, else FALSE
+ */
+int NixXML_check_xml_property_table(xmlHashTablePtr property_table);
+
+/**
  * Checks whether two xmlHashTables and their content are equal.
  *
  * @param hash_table1 An xmlHashTable instance
@@ -76,6 +84,15 @@ int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashT
  * @return TRUE if the hash tables have the same content, else FALSE
  */
 int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function);
+
+/**
+ * Checks whether two xmlHashTables with string values are equal.
+ *
+ * @param property_table1 An xmlHashTable instance
+ * @param property_table2 An xmlHashTable instance
+ * @return TRUE if the hash tables have the same content, else FALSE
+ */
+int NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashTablePtr property_table2);
 
 /**
  * Inserts a value into an xmlHashTable

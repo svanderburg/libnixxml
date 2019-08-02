@@ -18,6 +18,7 @@
  */
 
 #include "nixxml-ghashtable.h"
+#include <nixxml-util.h>
 #include "nixxml-ghashtable-iter.h"
 
 void *NixXML_create_g_hash_table(xmlNodePtr element, void *userdata)
@@ -40,6 +41,11 @@ void NixXML_delete_g_hash_table(GHashTable *hash_table, NixXML_DeleteGHashTableV
     }
 }
 
+void NixXML_delete_g_property_table(GHashTable *property_table)
+{
+    NixXML_delete_g_hash_table(property_table, (NixXML_DeleteGHashTableValueFunc)xmlFree);
+}
+
 int NixXML_check_g_hash_table(GHashTable *hash_table, NixXML_CheckGHashTableValueFunc check_function)
 {
     GHashTableIter iter;
@@ -57,6 +63,11 @@ int NixXML_check_g_hash_table(GHashTable *hash_table, NixXML_CheckGHashTableValu
     }
 
     return status;
+}
+
+int NixXML_check_g_property_table(GHashTable *property_table)
+{
+    return NixXML_check_g_hash_table(property_table, NixXML_check_value_is_not_null);
 }
 
 int NixXML_compare_g_hash_tables(GHashTable *hash_table1, GHashTable *hash_table2, NixXML_CompareGHashTableValueFunc compare_function)
@@ -84,6 +95,11 @@ int NixXML_compare_g_hash_tables(GHashTable *hash_table1, GHashTable *hash_table
     }
     else
         return FALSE;
+}
+
+int NixXML_compare_g_property_tables(GHashTable *property_table1, GHashTable *property_table2)
+{
+    return NixXML_compare_g_hash_tables(property_table1, property_table2, (NixXML_CompareGHashTableValueFunc)NixXML_compare_xml_strings);
 }
 
 void NixXML_insert_into_g_hash_table(void *table, const xmlChar *key, void *value, void *userdata)

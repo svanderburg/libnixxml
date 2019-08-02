@@ -57,7 +57,7 @@ void NixXML_delete_g_values_array(GPtrArray *array)
     NixXML_delete_g_ptr_array(array, free);
 }
 
-int NixXML_check_g_ptr_array(GPtrArray *array, NixXML_CheckGPtrArrayElementFunc check_element)
+int NixXML_check_g_ptr_array(const GPtrArray *array, NixXML_CheckGPtrArrayElementFunc check_element)
 {
     unsigned int i;
     int status = TRUE;
@@ -71,6 +71,27 @@ int NixXML_check_g_ptr_array(GPtrArray *array, NixXML_CheckGPtrArrayElementFunc 
     }
 
     return status;
+}
+
+int NixXML_compare_g_ptr_arrays(const GPtrArray *left, const GPtrArray *right, NixXML_CompareGPtrArrayElementFunc compare_element)
+{
+    if(left->len == right->len)
+    {
+        unsigned int i;
+
+        for(i = 0; i < left->len; i++)
+        {
+            gpointer *value1 = g_ptr_array_index(left, i);
+            gpointer *value2 = g_ptr_array_index(right, i);
+
+            if(!compare_element(value1, value2))
+                return FALSE;
+        }
+
+        return TRUE;
+    }
+    else
+        return FALSE;
 }
 
 void NixXML_print_g_ptr_array_elements_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)

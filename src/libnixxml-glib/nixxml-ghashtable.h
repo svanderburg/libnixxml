@@ -39,7 +39,7 @@ typedef void (*NixXML_DeleteGHashTableValueFunc) (gpointer value);
  * @param value Value to check
  * @return TRUE if the value is valid, else FALSE
  */
-typedef int (*NixXML_CheckGHashTableValueFunc) (const gpointer value);
+typedef int (*NixXML_CheckGHashTableValueFunc) (gconstpointer value);
 
 /**
  * Function that compares two values with identical keys in an hash table.
@@ -48,7 +48,7 @@ typedef int (*NixXML_CheckGHashTableValueFunc) (const gpointer value);
  * @param right Value to check
  * @return TRUE if the two values are identical
  */
-typedef int (*NixXML_CompareGHashTableValueFunc) (const gpointer left, const gpointer right);
+typedef int (*NixXML_CompareGHashTableValueFunc) (gconstpointer left, gconstpointer right);
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,6 +73,13 @@ void *NixXML_create_g_hash_table(xmlNodePtr element, void *userdata);
 void NixXML_delete_g_hash_table(GHashTable *hash_table, NixXML_DeleteGHashTableValueFunc delete_function);
 
 /**
+ * Deletes a GHashTable of string values.
+ *
+ * @param property_table A GHashTable instance
+ */
+void NixXML_delete_g_property_table(GHashTable *property_table);
+
+/**
  * Checks whether the content of an GHashTable is valid.
  *
  * @param hash_table A GHashTable instance
@@ -82,7 +89,15 @@ void NixXML_delete_g_hash_table(GHashTable *hash_table, NixXML_DeleteGHashTableV
 int NixXML_check_g_hash_table(GHashTable *hash_table, NixXML_CheckGHashTableValueFunc check_function);
 
 /**
- * Checks whether two xmlHashTables and their content are equal.
+ * Checks whether a GHashTable does not refer to NULL values.
+ *
+ * @param property_table A GHashTable instance
+ * @return TRUE if all members are valid, else FALSE
+ */
+int NixXML_check_g_property_table(GHashTable *property_table);
+
+/**
+ * Checks whether two GHashTables and their content are equal.
  *
  * @param hash_table1 A GHashTable instance
  * @param hash_table2 A GHashTable instance
@@ -90,6 +105,15 @@ int NixXML_check_g_hash_table(GHashTable *hash_table, NixXML_CheckGHashTableValu
  * @return TRUE if the hash tables have the same content, else FALSE
  */
 int NixXML_compare_g_hash_tables(GHashTable *hash_table1, GHashTable *hash_table2, NixXML_CompareGHashTableValueFunc compare_function);
+
+/**
+ * Checks whether two GHashTables with strings value are equal.
+ *
+ * @param property_table1 A GHashTable instance
+ * @param property_table2 A GHashTable instance
+ * @return TRUE if the hash tables have the same content, else FALSE
+ */
+int NixXML_compare_g_property_tables(GHashTable *property_table1, GHashTable *property_table2);
 
 /**
  * Inserts a value into a GHashTable

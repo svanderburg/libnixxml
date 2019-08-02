@@ -34,19 +34,27 @@ static void delete_list(void *list)
 
 static void delete_attrset(GHashTable *hash_table)
 {
-    GHashTableIter iter;
-    gpointer key, obj;
-
-    g_hash_table_iter_init(&iter, hash_table);
-    while(g_hash_table_iter_next(&iter, &key, &obj))
-        NixXML_delete_node_glib((NixXML_Node*)obj);
-
-    g_hash_table_destroy(hash_table);
+    NixXML_delete_g_hash_table(hash_table, (NixXML_DeleteGHashTableValueFunc)NixXML_delete_node_glib);
 }
 
 void NixXML_delete_node_glib(NixXML_Node *node)
 {
     NixXML_delete_node(node, delete_list, (NixXML_DeleteGPtrArrayElementFunc)delete_attrset);
+}
+
+static int compare_lists(const GPtrArray *left, const GPtrArray *right)
+{
+    return NixXML_compare_g_ptr_arrays(left, right, (NixXML_CompareGPtrArrayElementFunc)NixXML_compare_nodes_glib);
+}
+
+static int compare_attrsets(GHashTable *left, GHashTable *right)
+{
+    return NixXML_compare_g_hash_tables(left, right, (NixXML_CompareGHashTableValueFunc)NixXML_compare_nodes_glib);
+}
+
+int NixXML_compare_nodes_glib(const NixXML_Node *left, const NixXML_Node *right)
+{
+    return NixXML_compare_nodes(left, right, (NixXML_CompareObjectFunc)compare_lists, (NixXML_CompareObjectFunc)compare_attrsets);
 }
 
 void *NixXML_generic_parse_expr_glib(xmlNodePtr element, const char *type_property_name, const char *name_property_name, void *userdata)

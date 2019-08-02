@@ -40,7 +40,16 @@ typedef void (*NixXML_DeletePtrArrayElementFunc) (void *element);
  * @param element Element to check
  * @return TRUE if the value is valid, else FALSE
  */
-typedef int (*NixXML_CheckPtrArrayElementFunc) (void *element);
+typedef int (*NixXML_CheckPtrArrayElementFunc) (const void *element);
+
+/**
+ * Compare two elements and checks whether they are equal.
+ *
+ * @param left Element to compare
+ * @param right Element to compare
+ * @return TRUE if both elements are equal, else FALSE
+ */
+typedef int (*NixXML_ComparePtrArrayElementFunc) (const void *left, const void *right);
 
 #ifdef __cplusplus
 extern "C" {
@@ -94,9 +103,19 @@ void NixXML_delete_values_array(void **array);
  * Checks the validity of all members in the pointer array.
  *
  * @param array Pointer array to check
+ * @param check_element Pointer to a function that cheks the validity of an element
  * @return TRUE if all members are valid, else FALSE
  */
-int NixXML_check_ptr_array(void **array, NixXML_CheckPtrArrayElementFunc check_element);
+int NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element);
+
+/**
+ * Compares two arrays and their content and checks whether they are equal.
+ *
+ * @param left Pointer array to compare
+ * @param right Pointer array to compare
+ * @param compare_element Pointer to a function that compares elements in the arrays
+ */
+int NixXML_compare_ptr_arrays(const void **left, const void **right, NixXML_ComparePtrArrayElementFunc compare_element);
 
 /**
  * Prints a Nix representation of all elements in the array.

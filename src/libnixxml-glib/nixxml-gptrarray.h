@@ -39,7 +39,16 @@ typedef void (*NixXML_DeleteGPtrArrayElementFunc) (gpointer element);
  * @param element Element to check
  * @return TRUE if the value is valid, else FALSE
  */
-typedef int (*NixXML_CheckGPtrArrayElementFunc) (const gpointer element);
+typedef int (*NixXML_CheckGPtrArrayElementFunc) (gconstpointer element);
+
+/**
+ * Compare two elements and checks whether they are equal.
+ *
+ * @param left Element to compare
+ * @param right Element to compare
+ * @return TRUE if both elements are equal, else FALSE
+ */
+typedef int (*NixXML_CompareGPtrArrayElementFunc) (gconstpointer left, gconstpointer right);
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,9 +102,19 @@ void NixXML_delete_g_values_array(GPtrArray *array);
  * Checks the validity of all members in the GPtrArray.
  *
  * @param array GPtrArray array to check
+ * @param check_element Pointer to a function that cheks the validity of an element
  * @return TRUE if all members are valid, else FALSE
  */
-int NixXML_check_g_ptr_array(GPtrArray *array, NixXML_CheckGPtrArrayElementFunc check_element);
+int NixXML_check_g_ptr_array(const GPtrArray *array, NixXML_CheckGPtrArrayElementFunc check_element);
+
+/**
+ * Compares two arrays and their content and checks whether they are equal.
+ *
+ * @param left GPtrArray to compare
+ * @param right GPtrArray to compare
+ * @param compare_element Pointer to a function that compares elements in the arrays
+ */
+int NixXML_compare_g_ptr_arrays(const GPtrArray *left, const GPtrArray *right, NixXML_CompareGPtrArrayElementFunc compare_element);
 
 /**
  * Prints a Nix representation of all elements in the array.

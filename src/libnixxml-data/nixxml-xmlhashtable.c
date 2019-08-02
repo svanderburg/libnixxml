@@ -21,6 +21,7 @@
 
 #include "nixxml-xmlhashtable.h"
 #include <stdlib.h>
+#include "nixxml-util.h"
 #include "nixxml-xmlhashtable-scanner.h"
 
 #define TRUE 1
@@ -56,6 +57,11 @@ int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashT
     return params.result;
 }
 
+int NixXML_check_xml_property_table(xmlHashTablePtr property_table)
+{
+    return NixXML_check_xml_hash_table(property_table, NixXML_check_value_is_not_null);
+}
+
 typedef struct
 {
     int result;
@@ -88,6 +94,11 @@ int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr 
     }
     else
         return FALSE;
+}
+
+int NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashTablePtr property_table2)
+{
+    return NixXML_compare_xml_hash_tables(property_table1, property_table2, (NixXML_CompareXMLHashTableValueFunc)NixXML_compare_xml_strings);
 }
 
 void NixXML_insert_into_xml_hash_table(void *table, const xmlChar *key, void *value, void *userdata)
