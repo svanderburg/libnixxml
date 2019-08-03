@@ -39,6 +39,8 @@ void delete_draw_command(DrawCommand *drawCommand);
 
 int check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table);
 
+int compare_draw_commands(const DrawCommand *left, const DrawCommand *right);
+
 void print_draw_command_nix(FILE *file, const DrawCommand *drawCommand, const int indent_level, void *userdata);
 
 void print_draw_command_xml(FILE *file, const DrawCommand *drawCommand, const int indent_level, const char *type_property_name, void *userdata);

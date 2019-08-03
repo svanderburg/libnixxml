@@ -27,6 +27,8 @@ void *parse_meta_table(xmlNodePtr element, void *userdata);
 
 void delete_meta_table(xmlHashTablePtr meta_table);
 
+int compare_meta_tables(xmlHashTablePtr left, xmlHashTablePtr right);
+
 void print_meta_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata);
 
 void print_meta_table_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata);

@@ -37,6 +37,11 @@ void delete_meta_table(xmlHashTablePtr meta_table)
     xmlHashFree(meta_table, meta_deallocator);
 }
 
+int compare_meta_tables(xmlHashTablePtr left, xmlHashTablePtr right)
+{
+    return NixXML_compare_xml_property_tables(left, right);
+}
+
 void print_meta_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata)
 {
     NixXML_print_xml_hash_table_nix(file, hash_table, indent_level, userdata, NixXML_print_string_nix);

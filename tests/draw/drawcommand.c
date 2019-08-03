@@ -93,6 +93,13 @@ int check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_t
     return status;
 }
 
+int compare_draw_commands(const DrawCommand *left, const DrawCommand *right)
+{
+    return((xmlStrcmp(left->figure, right->figure) == 0)
+      && (left->x == right->x)
+      && (left->y == right->y));
+}
+
 /* Nix print functionality */
 
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)

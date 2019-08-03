@@ -30,6 +30,8 @@ void delete_draw_array(DrawCommand **draw_array);
 
 int check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table);
 
+int compare_draw_arrays(DrawCommand **left, DrawCommand **right);
+
 void print_draw_array_nix(FILE *file, const DrawCommand **draw_array, const int indent_level, void *userdata);
 
 void print_draw_array_xml(FILE *file, const DrawCommand **draw_array, const int indent_level, const char *type_property_name, void *userdata);

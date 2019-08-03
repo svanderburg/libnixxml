@@ -30,6 +30,8 @@ void delete_figures_table(xmlHashTablePtr figures_table);
 
 int check_figures_table(xmlHashTablePtr figures_table);
 
+int compare_figures_tables(xmlHashTablePtr left, xmlHashTablePtr right);
+
 void print_figures_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata);
 
 void print_figures_table_xml(FILE *file, xmlHashTablePtr hash_table, const int indent_level, const char *type_property_name, void *userdata);

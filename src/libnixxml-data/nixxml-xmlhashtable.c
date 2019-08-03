@@ -87,6 +87,7 @@ int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr 
     {
         CompareParams params;
         params.result = TRUE;
+        params.hash_table2 = hash_table2;
         params.compare_function = compare_function;
 
         xmlHashScan(hash_table1, scanner_compare, &params);

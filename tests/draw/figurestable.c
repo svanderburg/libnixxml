@@ -55,6 +55,11 @@ int check_figures_table(xmlHashTablePtr figures_table)
     return status;
 }
 
+int compare_figures_tables(xmlHashTablePtr left, xmlHashTablePtr right)
+{
+    return NixXML_compare_xml_hash_tables(left, right, (NixXML_CompareXMLHashTableValueFunc)compare_figures);
+}
+
 void print_figures_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata)
 {
     NixXML_print_xml_hash_table_nix(file, hash_table, indent_level, userdata, (NixXML_PrintValueFunc)print_figure_nix);

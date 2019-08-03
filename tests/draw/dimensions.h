@@ -37,6 +37,8 @@ void delete_dimensions(Dimensions *dimensions);
 
 int check_dimensions(const Dimensions *dimensions);
 
+int compare_dimensions(const Dimensions *left, const Dimensions *right);
+
 void print_dimensions_nix(FILE *file, const Dimensions *dimensions, const int indent_level, void *userdata);
 
 void print_dimensions_xml(FILE *file, const Dimensions *dimensions, const int indent_level, const char *type_property_name, void *userdata);

@@ -45,6 +45,8 @@ void delete_drawspec(DrawSpec *drawSpec);
 
 int check_drawspec(const DrawSpec *drawSpec);
 
+int compare_drawspecs(const DrawSpec *left, const DrawSpec *right);
+
 void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata);
 
 void print_drawspec_xml(FILE *file, const DrawSpec *drawSpec, const int indent_level, const char *type_property_name, void *userdata);

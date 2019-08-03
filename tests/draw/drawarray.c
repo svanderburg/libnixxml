@@ -50,6 +50,11 @@ int check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table)
     return TRUE;
 }
 
+int compare_draw_arrays(DrawCommand **left, DrawCommand **right)
+{
+    return NixXML_compare_ptr_arrays((const void **)left, (const void **)right, (NixXML_ComparePtrArrayElementFunc)compare_draw_commands);
+}
+
 void print_draw_array_nix(FILE *file, const DrawCommand **draw_array, const int indent_level, void *userdata)
 {
     NixXML_print_ptr_array_nix(file, (const void **)draw_array, indent_level, userdata, (NixXML_PrintValueFunc)print_draw_command_nix);

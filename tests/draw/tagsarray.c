@@ -21,6 +21,7 @@
 
 #include "tagsarray.h"
 #include <nixxml-ptrarray.h>
+#include <nixxml-util.h>
 
 void *parse_tags_array(xmlNodePtr element, void *userdata)
 {
@@ -32,12 +33,17 @@ void delete_tags_array(xmlChar **tags_array)
     NixXML_delete_values_array((void**)tags_array);
 }
 
-void print_tags_array_nix(FILE *file, const void **array, const int indent_level, void *userdata)
+int compare_tags_arrays(xmlChar **left, xmlChar **right)
 {
-    NixXML_print_ptr_array_nix(file, array, indent_level, userdata, NixXML_print_string_nix);
+    return NixXML_compare_ptr_arrays((const void **)left, (const void **)right, (NixXML_ComparePtrArrayElementFunc)NixXML_compare_xml_strings);
 }
 
-void print_tags_array_xml(FILE *file, const void **array, const int indent_level, const char *type_property_name, void *userdata)
+void print_tags_array_nix(FILE *file, const xmlChar **tags_array, const int indent_level, void *userdata)
 {
-    NixXML_print_ptr_array_xml(file, array, "elem", indent_level, type_property_name, userdata, NixXML_print_string_xml);
+    NixXML_print_ptr_array_nix(file, (const void **)tags_array, indent_level, userdata, NixXML_print_string_nix);
+}
+
+void print_tags_array_xml(FILE *file, const xmlChar **tags_array, const int indent_level, const char *type_property_name, void *userdata)
+{
+    NixXML_print_ptr_array_xml(file, (const void **)tags_array, "elem", indent_level, type_property_name, userdata, NixXML_print_string_xml);
 }

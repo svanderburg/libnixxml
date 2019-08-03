@@ -139,6 +139,17 @@ int check_drawspec(const DrawSpec *drawSpec)
     return status;
 }
 
+/* Compare functionality */
+
+int compare_drawspecs(const DrawSpec *left, const DrawSpec *right)
+{
+    return(compare_dimensions(left->dimensions, right->dimensions)
+      && compare_figures_tables(left->figures_table, right->figures_table)
+      && compare_draw_arrays(left->draw_array, right->draw_array)
+      && compare_meta_tables(left->meta_table, right->meta_table)
+      && compare_tags_arrays(left->tags_array, right->tags_array));
+}
+
 /* Print Nix functionality */
 
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)

@@ -41,6 +41,8 @@ void delete_figure(Figure *figure);
 
 int check_figure(const Figure *figure);
 
+int compare_figures(const Figure *left, const Figure *right);
+
 void print_figure_nix(FILE *file, const Figure *figure, const int indent_level, void *userdata);
 
 void print_figure_xml(FILE *file, const Figure *figure, const int indent_level, const char *type_property_name, void *userdata);

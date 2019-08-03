@@ -74,6 +74,12 @@ int check_dimensions(const Dimensions *dimensions)
     return status;
 }
 
+int compare_dimensions(const Dimensions *left, const Dimensions *right)
+{
+    return ((left->width == right->width)
+      && (left->height == right->height));
+}
+
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
     const Dimensions *dimensions = (const Dimensions*)value;

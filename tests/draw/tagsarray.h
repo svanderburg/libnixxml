@@ -27,8 +27,10 @@ void *parse_tags_array(xmlNodePtr element, void *userdata);
 
 void delete_tags_array(xmlChar **tags_array);
 
-void print_tags_array_nix(FILE *file, const void **array, const int indent_level, void *userdata);
+int compare_tags_arrays(xmlChar **left, xmlChar **right);
 
-void print_tags_array_xml(FILE *file, const void **array, const int indent_level, const char *type_property_name, void *userdata);
+void print_tags_array_nix(FILE *file, const xmlChar **tags_array, const int indent_level, void *userdata);
+
+void print_tags_array_xml(FILE *file, const xmlChar **tags_array, const int indent_level, const char *type_property_name, void *userdata);
 
 #endif

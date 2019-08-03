@@ -97,6 +97,14 @@ int check_figure(const Figure *figure)
     return status;
 }
 
+int compare_figures(const Figure *left, const Figure *right)
+{
+    return(xmlStrcmp(left->type, right->type) == 0
+      && (left->width == right->width)
+      && (left->height == right->height)
+      && (left->radius == right->radius));
+}
+
 static void print_attributes_nix(FILE *file, const void *value, const int indent_level, void *userdata, NixXML_PrintValueFunc print_value)
 {
     const Figure *figure = (const Figure*)value;
