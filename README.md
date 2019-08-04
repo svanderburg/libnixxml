@@ -469,7 +469,7 @@ To parse lists and attribute sets (that have arbitrary structures), you need
 generalized data structures that are list-like or table-like.
 
 `libnixxml` provides sub library called `libnixxml-data` that uses pointer
-arrays for lists and `xmlHashTable` for attribute sets.
+arrays for representing lists and `xmlHashTable` for attribute sets.
 
 The following XML document:
 
