@@ -32,14 +32,19 @@ typedef struct
 }
 PtrArray;
 
-void *NixXML_create_ptr_array(xmlNodePtr element, void *userdata)
+void **NixXML_create_ptr_array(unsigned int numOfElements)
+{
+    void **ret = (void**)malloc((numOfElements + 1) * sizeof(void*));
+    ret[numOfElements] = NULL;
+    return ret;
+}
+
+void *NixXML_create_ptr_array_from_element(xmlNodePtr element, void *userdata)
 {
     unsigned int numOfElements = xmlChildElementCount(element);
     PtrArray *ret = (PtrArray*)malloc(sizeof(PtrArray));
     ret->count = 0;
-
-    ret->elements = (void**)malloc((numOfElements + 1) * sizeof(void*));
-    ret->elements[numOfElements] = NULL;
+    ret->elements = NixXML_create_ptr_array(numOfElements);
 
     return ret;
 }
@@ -149,7 +154,7 @@ void NixXML_print_ptr_array_xml(FILE *file, const void **array, const char *chil
 
 void *NixXML_parse_ptr_array(xmlNodePtr element, const char *child_element_name, void *userdata, NixXML_ParseObjectFunc parse_object)
 {
-    return NixXML_parse_list(element, child_element_name, userdata, NixXML_create_ptr_array, NixXML_add_value_to_ptr_array, parse_object, NixXML_finalize_ptr_array);
+    return NixXML_parse_list(element, child_element_name, userdata, NixXML_create_ptr_array_from_element, NixXML_add_value_to_ptr_array, parse_object, NixXML_finalize_ptr_array);
 }
 
 xmlChar *NixXML_generate_env_value_from_ptr_array(const void *value, void *userdata, NixXML_GenerateEnvValueFunc generate_value)

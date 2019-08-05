@@ -27,7 +27,7 @@
 #define TRUE 1
 #define FALSE 0
 
-void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata)
+void *NixXML_create_xml_hash_table_from_element(xmlNodePtr element, void *userdata)
 {
     unsigned long numOfElements = xmlChildElementCount(element);
     return xmlHashCreate(numOfElements);
@@ -277,12 +277,12 @@ void NixXML_print_xml_hash_table_verbose_ordered_xml(FILE *file, xmlHashTablePtr
 
 void *NixXML_parse_xml_hash_table_simple(xmlNodePtr element, void *userdata, NixXML_ParseObjectFunc parse_object)
 {
-    return NixXML_parse_simple_attrset(element, userdata, NixXML_create_xml_hash_table, parse_object, NixXML_insert_into_xml_hash_table);
+    return NixXML_parse_simple_attrset(element, userdata, NixXML_create_xml_hash_table_from_element, parse_object, NixXML_insert_into_xml_hash_table);
 }
 
 void *NixXML_parse_xml_hash_table_verbose(xmlNodePtr element, const char *child_element_name, const char *name_property_name, void *userdata, NixXML_ParseObjectFunc parse_object)
 {
-    return NixXML_parse_verbose_attrset(element, child_element_name, name_property_name, userdata, NixXML_create_xml_hash_table, parse_object, NixXML_insert_into_xml_hash_table);
+    return NixXML_parse_verbose_attrset(element, child_element_name, name_property_name, userdata, NixXML_create_xml_hash_table_from_element, parse_object, NixXML_insert_into_xml_hash_table);
 }
 
 /* Generate environment variables functionality */

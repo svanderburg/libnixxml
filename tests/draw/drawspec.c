@@ -93,6 +93,19 @@ DrawSpec *open_drawspec(const char *filename)
     /* Parse manifest */
     drawSpec = (DrawSpec*)parse_drawspec(node_root, NULL);
 
+    /* Set default values */
+    if(drawSpec != NULL)
+    {
+        if(drawSpec->figures_table == NULL)
+            drawSpec->figures_table = xmlHashCreate(0);
+        if(drawSpec->draw_array == NULL)
+            drawSpec->draw_array = (DrawCommand**)NixXML_create_ptr_array(0);
+        if(drawSpec->meta_table == NULL)
+            drawSpec->meta_table = xmlHashCreate(0);
+        if(drawSpec->tags_array == NULL)
+            drawSpec->tags_array = (xmlChar**)NixXML_create_ptr_array(0);
+    }
+
     /* Cleanup */
     xmlFreeDoc(doc);
     xmlCleanupCharEncodingHandlers();
@@ -130,7 +143,7 @@ int check_drawspec(const DrawSpec *drawSpec)
     if(!check_dimensions(drawSpec->dimensions))
         status = FALSE;
 
-    if(drawSpec->figures_table != NULL && !check_figures_table(drawSpec->figures_table))
+    if(!check_figures_table(drawSpec->figures_table))
         status = FALSE;
 
     if(!check_draw_array(drawSpec->draw_array, drawSpec->figures_table))

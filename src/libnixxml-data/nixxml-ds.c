@@ -66,7 +66,7 @@ int NixXML_compare_nodes_ds(const NixXML_Node *left, const NixXML_Node *right)
 
 void *NixXML_generic_parse_expr_ds(xmlNodePtr element, const char *type_property_name, const char *name_property_name, void *userdata)
 {
-    return NixXML_generic_parse_expr(element, type_property_name, name_property_name, NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
+    return NixXML_generic_parse_expr(element, type_property_name, name_property_name, NixXML_create_ptr_array_from_element, NixXML_create_xml_hash_table_from_element, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
 }
 
 void NixXML_print_generic_expr_ds_nix(FILE *file, const NixXML_Node *node, const int indent_level)

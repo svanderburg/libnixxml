@@ -56,6 +56,15 @@ extern "C" {
 #endif
 
 /**
+ * Creates an empty NULL-terminated pointer array providing space for the
+ * specified amount of elements.
+ *
+ * @param numOfElements The amount of elements the array should be able to store
+ * @return Pointer array
+ */
+void **NixXML_create_ptr_array(unsigned int numOfElements);
+
+/**
  * Creates a new pointer array by parsing the sub elements of a provided
  * XML element.
  *
@@ -63,7 +72,7 @@ extern "C" {
  * @param userdata Arbitrary user data that is propagated to all parse functions
  * @return A data structure that encapsulates a pointer array. It must be finalized to become a usable pointer array.
  */
-void *NixXML_create_ptr_array(xmlNodePtr element, void *userdata);
+void *NixXML_create_ptr_array_from_element(xmlNodePtr element, void *userdata);
 
 /**
  * Adds a value to a non-finalized pointer array.

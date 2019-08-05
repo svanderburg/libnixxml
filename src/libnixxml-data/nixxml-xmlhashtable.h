@@ -56,7 +56,7 @@ extern "C" {
  * @param userdata Arbitrary user data that is propagated to all parse functions
  * @return A pointer to an xmlHashTable
  */
-void *NixXML_create_xml_hash_table(xmlNodePtr element, void *userdata);
+void *NixXML_create_xml_hash_table_from_element(xmlNodePtr element, void *userdata);
 
 /**
  * Checks whether the content of an xmlHashTable is valid.
