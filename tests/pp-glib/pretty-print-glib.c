@@ -51,7 +51,7 @@ static NixXML_Node *open_expr(const char *filename)
     }
 
     /* Parse expression */
-    node = NixXML_generic_parse_expr_glib(node_root, "type", "name", NULL);
+    node = (NixXML_Node*)NixXML_generic_parse_expr_glib(node_root, "type", "name", NULL);
 
     /* Cleanup */
     xmlFreeDoc(doc);

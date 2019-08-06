@@ -59,7 +59,22 @@ static void parse_and_insert_drawspec_attributes(xmlNodePtr element, void *table
 
 static void *parse_drawspec(xmlNodePtr element, void *userdata)
 {
-    return NixXML_parse_simple_heterogeneous_attrset(element, userdata, create_drawspec, parse_and_insert_drawspec_attributes);
+    DrawSpec *drawSpec = (DrawSpec*)NixXML_parse_simple_heterogeneous_attrset(element, userdata, create_drawspec, parse_and_insert_drawspec_attributes);
+
+    /* Set default values */
+    if(drawSpec != NULL)
+    {
+        if(drawSpec->figures_table == NULL)
+            drawSpec->figures_table = xmlHashCreate(0);
+        if(drawSpec->draw_array == NULL)
+            drawSpec->draw_array = (DrawCommand**)NixXML_create_ptr_array(0);
+        if(drawSpec->meta_table == NULL)
+            drawSpec->meta_table = xmlHashCreate(0);
+        if(drawSpec->tags_array == NULL)
+            drawSpec->tags_array = (xmlChar**)NixXML_create_ptr_array(0);
+    }
+
+    return drawSpec;
 }
 
 DrawSpec *open_drawspec(const char *filename)
@@ -92,19 +107,6 @@ DrawSpec *open_drawspec(const char *filename)
 
     /* Parse manifest */
     drawSpec = (DrawSpec*)parse_drawspec(node_root, NULL);
-
-    /* Set default values */
-    if(drawSpec != NULL)
-    {
-        if(drawSpec->figures_table == NULL)
-            drawSpec->figures_table = xmlHashCreate(0);
-        if(drawSpec->draw_array == NULL)
-            drawSpec->draw_array = (DrawCommand**)NixXML_create_ptr_array(0);
-        if(drawSpec->meta_table == NULL)
-            drawSpec->meta_table = xmlHashCreate(0);
-        if(drawSpec->tags_array == NULL)
-            drawSpec->tags_array = (xmlChar**)NixXML_create_ptr_array(0);
-    }
 
     /* Cleanup */
     xmlFreeDoc(doc);
