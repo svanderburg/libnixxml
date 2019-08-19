@@ -22,7 +22,7 @@
 #include "pretty-print-glib.h"
 #include "nixxml-glib.h"
 
-static NixXML_Node *open_expr(const char *filename)
+static NixXML_Node *open_expr(const char *filename, const unsigned int flags)
 {
     xmlDocPtr doc;
     xmlNodePtr node_root;
@@ -51,7 +51,10 @@ static NixXML_Node *open_expr(const char *filename)
     }
 
     /* Parse expression */
-    node = (NixXML_Node*)NixXML_generic_parse_expr_glib(node_root, "type", "name", NULL);
+    if(flags & NIXXMLPP_PARSE_XML_SIMPLE)
+        node = (NixXML_Node*)NixXML_generic_parse_simple_expr_glib(node_root, "type", NULL);
+    else
+        node = (NixXML_Node*)NixXML_generic_parse_verbose_expr_glib(node_root, "type", "name", NULL);
 
     /* Cleanup */
     xmlFreeDoc(doc);
@@ -62,9 +65,9 @@ static NixXML_Node *open_expr(const char *filename)
     return node;
 }
 
-int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys)
+int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, const unsigned int flags)
 {
-    NixXML_Node *node = open_expr(config_file);
+    NixXML_Node *node = open_expr(config_file, flags);
 
     if(node == NULL)
     {
@@ -80,19 +83,19 @@ int pretty_print_file_glib(const char *config_file, FormatType format, int inden
             case FORMAT_NONE:
                 break;
             case FORMAT_NIX:
-                if(order_keys)
+                if(flags & NIXXMLPP_ORDER_KEYS)
                     NixXML_print_generic_expr_glib_ordered_nix(stdout, node, indent_level);
                 else
                     NixXML_print_generic_expr_glib_nix(stdout, node, indent_level);
                 break;
             case FORMAT_VERBOSE_XML:
-                if(order_keys)
+                if(flags & NIXXMLPP_ORDER_KEYS)
                     NixXML_print_generic_expr_glib_verbose_ordered_xml(stdout, node, indent_level, root_element_name, attr_element_name, name_property_name, list_element_name, type_property_name);
                 else
                     NixXML_print_generic_expr_glib_verbose_xml(stdout, node, indent_level, root_element_name, attr_element_name, name_property_name, list_element_name, type_property_name);
                 break;
             case FORMAT_SIMPLE_XML:
-                if(order_keys)
+                if(flags & NIXXMLPP_ORDER_KEYS)
                     NixXML_print_generic_expr_glib_simple_ordered_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name);
                 else
                     NixXML_print_generic_expr_glib_simple_xml(stdout, node, indent_level, root_element_name, list_element_name, type_property_name);

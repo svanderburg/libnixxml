@@ -41,7 +41,8 @@ AS_IF([test "x$with_glib" = "xyes"], [
     tests/pp-glib/Makefile
     tests/envtest-glib/Makefile
     ])
-    AC_CONFIG_FILES([tests/pp-glib/convert-xml.sh], [chmod +x tests/pp-glib/convert-xml.sh])
+    AC_CONFIG_FILES([tests/pp-glib/convert-xml-simple.sh], [chmod +x tests/pp-glib/convert-xml-simple.sh])
+    AC_CONFIG_FILES([tests/pp-glib/convert-xml-verbose.sh], [chmod +x tests/pp-glib/convert-xml-verbose.sh])
 ])
 
 # Checks for gdlib libraries
@@ -74,6 +75,7 @@ tests/envtest/Makefile
 ])
 
 AC_CONFIG_FILES([tests/draw/convert-xml.sh], [chmod +x tests/draw/convert-xml.sh])
-AC_CONFIG_FILES([tests/generic/convert-xml.sh], [chmod +x tests/generic/convert-xml.sh])
+AC_CONFIG_FILES([tests/generic/convert-xml-simple.sh], [chmod +x tests/generic/convert-xml-simple.sh])
+AC_CONFIG_FILES([tests/generic/convert-xml-verbose.sh], [chmod +x tests/generic/convert-xml-verbose.sh])
 
 AC_OUTPUT

@@ -22,6 +22,9 @@
 #ifndef __NIXXML_PRETTY_PRINT_H
 #define __NIXXML_PRETTY_PRINT_H
 
+#define NIXXMLPP_ORDER_KEYS       0x1
+#define NIXXMLPP_PARSE_XML_SIMPLE 0x2
+
 typedef enum
 {
     FORMAT_NONE = 0,
@@ -31,6 +34,6 @@ typedef enum
 }
 FormatType;
 
-int pretty_print_file(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, int order_keys);
+int pretty_print_file(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, const unsigned int flags);
 
 #endif

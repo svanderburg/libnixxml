@@ -35,8 +35,12 @@ static void print_usage(const char *command)
     "The command `nixxml-pp' parses a provided XML file using conventions that\n"
     "are similar to Nix expressions and pretty prints it in a desired output\n"
     "format.\n"
+    );
 
+    puts(
     "\nOptions:\n"
+    "  -s, --simple                   Indicates that the input XML uses the simple\n"
+    "                                 notation for attribute sets.\n"
     "  -f, --format=OUTPUT_FORMAT     Specifies the desired output format ('nix',\n"
     "                                 'xml' or 'simple-xml').\n"
     "      --disable-indent           Do not use indentation\n"
@@ -65,6 +69,7 @@ int main(int argc, char *argv[])
     int c, option_index = 0;
     struct option long_options[] =
     {
+        {"simple", no_argument, 0, 's'},
         {"format", required_argument, 0, 'f'},
         {"help", no_argument, 0, 'h'},
         {"disable-indent", no_argument, 0, 'i'},
@@ -84,13 +89,16 @@ int main(int argc, char *argv[])
     char *attr_element_name = "attr";
     char *name_property_name = "name";
     char *type_property_name = "type";
-    int order_keys = FALSE;
+    unsigned int flags = 0;
 
     /* Parse command-line options */
-    while((c = getopt_long(argc, argv, "f:h", long_options, &option_index)) != -1)
+    while((c = getopt_long(argc, argv, "sf:h", long_options, &option_index)) != -1)
     {
         switch(c)
         {
+            case 's':
+                flags |= NIXXMLPP_PARSE_XML_SIMPLE;
+                break;
             case 'f':
                 if(strcmp(optarg, "nix") == 0)
                     format = FORMAT_NIX;
@@ -121,7 +129,7 @@ int main(int argc, char *argv[])
                 type_property_name = optarg;
                 break;
             case '6':
-                order_keys = TRUE;
+                flags |= NIXXMLPP_ORDER_KEYS;
                 break;
             case 'h':
                 print_usage(argv[0]);
@@ -147,5 +155,5 @@ int main(int argc, char *argv[])
     }
 
     /* Execute operation */
-    return pretty_print_file(argv[optind], format, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, order_keys);
+    return pretty_print_file(argv[optind], format, indent_level, root_element_name, list_element_name, attr_element_name, name_property_name, type_property_name, flags);
 }

@@ -535,12 +535,13 @@ parse an *entire* document by using a single function call:
 
 xmlNodePtr element;
 /* Open XML file and obtain root element */
-NixXML_Node *node = NixXML_generic_parse_expr(element, "type", "name", NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
+NixXML_Node *node = NixXML_generic_parse_verbose_expr(element, "type", "name", NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
 ```
 
-The above function composes a generic `NixXML_Node` object. The function
-interface uses function pointers to compose lists and tables. These functions
-are provided by the pointer array and `xmlHashTable` modules in the
+The above function composes a generic `NixXML_Node` object by parsing
+type-annotated XML data using the verbose notation for attribute sets. The
+function interface uses function pointers to compose lists and tables. These
+functions are provided by the pointer array and `xmlHashTable` modules in the
 `libnixxml-data` library.
 
 We can also print an entire `NixXML_Node` object structure as a Nix expression:
@@ -577,7 +578,7 @@ attribute sets and `GPtrArray` for lists:
 
 xmlNodePtr element;
 /* Open XML file and obtain root element */
-NixXML_Node *node = NixXML_generic_parse_expr_glib(element, "type", "name", NULL);
+NixXML_Node *node = NixXML_generic_parse_verbose_expr_glib(element, "type", "name", NULL);
 ```
 
 Similarly, you can also generically print object trees (in, for example, the
