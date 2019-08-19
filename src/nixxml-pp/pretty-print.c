@@ -22,7 +22,7 @@
 #include "pretty-print.h"
 #include "nixxml-ds.h"
 
-static NixXML_Node *open_expr(const char *filename, const unsigned int flags)
+static NixXML_Node *open_expr(const char *filename, const char *name_property_name, const char *type_property_name, const unsigned int flags)
 {
     xmlDocPtr doc;
     xmlNodePtr node_root;
@@ -52,9 +52,9 @@ static NixXML_Node *open_expr(const char *filename, const unsigned int flags)
 
     /* Parse expression */
     if(flags & NIXXMLPP_PARSE_XML_SIMPLE)
-        node = (NixXML_Node*)NixXML_generic_parse_simple_expr_ds(node_root, "type", NULL);
+        node = (NixXML_Node*)NixXML_generic_parse_simple_expr_ds(node_root, type_property_name, NULL);
     else
-        node = (NixXML_Node*)NixXML_generic_parse_verbose_expr_ds(node_root, "type", "name", NULL);
+        node = (NixXML_Node*)NixXML_generic_parse_verbose_expr_ds(node_root, type_property_name, name_property_name, NULL);
 
     /* Cleanup */
     xmlFreeDoc(doc);
@@ -67,7 +67,7 @@ static NixXML_Node *open_expr(const char *filename, const unsigned int flags)
 
 int pretty_print_file(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, const unsigned int flags)
 {
-    NixXML_Node *node = open_expr(config_file, flags);
+    NixXML_Node *node = open_expr(config_file, name_property_name, type_property_name, flags);
 
     if(node == NULL)
     {
