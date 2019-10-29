@@ -3,7 +3,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: libnixxml
+Name: libnixxml-glib
 Version: @VERSION@
 Description: Nix-XML GLib integration library
 Requires:
