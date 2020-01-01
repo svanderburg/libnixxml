@@ -30,6 +30,8 @@ xmlChar *NixXML_generate_env_value_from_node(const void *value, void *userdata)
     {
         case NIX_XML_TYPE_STRING:
             return NixXML_generate_env_value_from_string(node->value, userdata);
+        case NIX_XML_TYPE_PATH:
+            return NixXML_generate_env_value_from_string(node->value, userdata);
         case NIX_XML_TYPE_INT:
             return NixXML_generate_env_value_from_int(node->value, userdata);
         case NIX_XML_TYPE_FLOAT:

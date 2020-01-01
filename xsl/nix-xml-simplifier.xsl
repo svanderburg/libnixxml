@@ -11,7 +11,7 @@
   <xsl:param name="nameAttributeName" select="'name'" />
 
   <!-- Transformation templates -->
-  <xsl:template match="string | int | float | bool">
+  <xsl:template match="string | path | int | float | bool">
     <xsl:choose>
       <xsl:when test="$enableTypes">
         <xsl:attribute name="{$typeAttributeName}">

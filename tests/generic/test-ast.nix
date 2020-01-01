@@ -9,4 +9,9 @@
     { name = "first"; value = 1; }
     { name = "second"; value = 2; }
   ];
+  files = {
+    currentDir = ./.;
+    testFile = ./test.txt;
+    testBFile = /. + "./test B.txt";
+  };
 }
