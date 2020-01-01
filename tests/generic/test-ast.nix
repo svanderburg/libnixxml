@@ -1,5 +1,6 @@
 {
   a = "test file";
+  b = "";
   list = [ "a" "b" "c" ];
   objs = {
     first = "first";
