@@ -1,0 +1,5 @@
+<invalidtype type="attrs">
+  <a type="string">Hello</a>
+  <b type="int">1234</b>
+  <c type="invalid">This type is unsupported</c>
+</invalidtype>

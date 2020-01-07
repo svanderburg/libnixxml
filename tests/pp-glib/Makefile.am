@@ -1,4 +1,4 @@
-TESTS = convert-xml-simple.sh test-identical-simple.sh convert-xml-verbose.sh test-identical-verbose.sh
+TESTS = convert-xml-simple.sh test-identical-simple.sh convert-xml-verbose.sh test-identical-verbose.sh test-invalidtype.sh
 
 check_PROGRAMS = pp-glib
 
@@ -7,4 +7,4 @@ pp_glib_SOURCES = pretty-print-glib.c main.c
 pp_glib_LDADD = ../../src/libnixxml/libnixxml.la ../../src/libnixxml-glib/libnixxml-glib.la
 pp_glib_CFLAGS = $(GLIB2_CFLAGS) $(LIBXML2_CFLAGS) -I../../src/libnixxml -I../../src/libnixxml-glib
 
-EXTRA_DIST = convert-xml-simple.sh.in test-identical-simple.sh convert-xml-verbose.sh.in test-identical-verbose.sh test-ast.nix setup.sh
+EXTRA_DIST = convert-xml-simple.sh.in test-identical-simple.sh convert-xml-verbose.sh.in test-identical-verbose.sh test-invalidtype.sh test-ast.nix test-invalidtype.xml setup.sh

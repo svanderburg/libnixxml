@@ -105,7 +105,8 @@ int NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashT
 void NixXML_insert_into_xml_hash_table(void *table, const xmlChar *key, void *value, void *userdata)
 {
     xmlHashTablePtr hash_table = (xmlHashTablePtr)table;
-    xmlHashAddEntry(hash_table, key, value);
+    if(value != NULL)
+        xmlHashAddEntry(hash_table, key, value);
 }
 
 /* Nix printing */

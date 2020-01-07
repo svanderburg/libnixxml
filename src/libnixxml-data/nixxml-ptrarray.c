@@ -52,8 +52,12 @@ void *NixXML_create_ptr_array_from_element(xmlNodePtr element, void *userdata)
 void NixXML_add_value_to_ptr_array(void *list, void *value, void *userdata)
 {
     PtrArray *array = (PtrArray*)list;
-    array->elements[array->count] = value;
-    array->count++;
+
+    if(value != NULL)
+    {
+        array->elements[array->count] = value;
+        array->count++;
+    }
 }
 
 void *NixXML_finalize_ptr_array(void *list, void *userdata)
