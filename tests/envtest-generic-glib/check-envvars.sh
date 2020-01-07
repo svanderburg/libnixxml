@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-if test "$string_value" != "hello"
+if test $string_value != "hello"
 then
     echo "string_value should be: 'hello', instead it is: '$string_value'" >&2
     false
@@ -12,9 +12,9 @@ then
     false
 fi
 
-if test "$float_value" != 1.234500
+if test "$float_value" != 1.2345
 then
-    echo "float_value should be: '1.234500', instead it is: '$float_value'" >&2
+    echo "float_value should be: '1.2345', instead it is: '$float_value'" >&2
     false
 fi
 
