@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,6 +22,7 @@
 #ifndef __DRAWSPEC_H
 #define __DRAWSPEC_H
 #include <libxml/parser.h>
+#include "nixxml-types.h"
 #include "dimensions.h"
 #include "drawcommand.h"
 
@@ -43,9 +44,9 @@ DrawSpec *open_drawspec(const char *filename);
 
 void delete_drawspec(DrawSpec *drawSpec);
 
-int check_drawspec(const DrawSpec *drawSpec);
+NixXML_bool check_drawspec(const DrawSpec *drawSpec);
 
-int compare_drawspecs(const DrawSpec *left, const DrawSpec *right);
+NixXML_bool compare_drawspecs(const DrawSpec *left, const DrawSpec *right);
 
 void print_drawspec_nix(FILE *file, const DrawSpec *drawSpec, const int indent_level, void *userdata);
 

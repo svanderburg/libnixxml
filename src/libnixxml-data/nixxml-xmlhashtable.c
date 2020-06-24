@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -47,7 +47,7 @@ static void scanner_check(void *payload, void *data, const xmlChar *name)
         params->result = FALSE;
 }
 
-int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function)
+NixXML_bool NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function)
 {
     CheckParams params;
     params.result = TRUE;
@@ -57,7 +57,7 @@ int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashT
     return params.result;
 }
 
-int NixXML_check_xml_property_table(xmlHashTablePtr property_table)
+NixXML_bool NixXML_check_xml_property_table(xmlHashTablePtr property_table)
 {
     return NixXML_check_xml_hash_table(property_table, NixXML_check_value_is_not_null);
 }
@@ -81,7 +81,7 @@ static void scanner_compare(void *payload, void *data, const xmlChar *name)
         params->result = FALSE;
 }
 
-int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function)
+NixXML_bool NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function)
 {
     if(xmlHashSize(hash_table1) == xmlHashSize(hash_table2))
     {
@@ -97,7 +97,7 @@ int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr 
         return FALSE;
 }
 
-int NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashTablePtr property_table2)
+NixXML_bool NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashTablePtr property_table2)
 {
     return NixXML_compare_xml_hash_tables(property_table1, property_table2, (NixXML_CompareXMLHashTableValueFunc)NixXML_compare_xml_strings);
 }

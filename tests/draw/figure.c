@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -72,9 +72,9 @@ void delete_figure(Figure *figure)
     }
 }
 
-int check_figure(const Figure *figure)
+NixXML_bool check_figure(const Figure *figure)
 {
-    int status = TRUE;
+    NixXML_bool status = TRUE;
 
     if(xmlStrcmp(figure->type, (xmlChar*) "rectangle") != 0 && xmlStrcmp(figure->type, (xmlChar *) "circle") != 0)
     {

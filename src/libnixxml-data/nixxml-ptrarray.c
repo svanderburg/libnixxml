@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -84,7 +84,7 @@ void NixXML_delete_ptr_array(void **array, NixXML_DeletePtrArrayElementFunc dele
     }
 }
 
-int NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element)
+NixXML_bool NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element)
 {
     unsigned int i = 0;
     int result = TRUE;
@@ -100,7 +100,7 @@ int NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc c
     return result;
 }
 
-int NixXML_compare_ptr_arrays(const void **left, const void **right, NixXML_ComparePtrArrayElementFunc compare_element)
+NixXML_bool NixXML_compare_ptr_arrays(const void **left, const void **right, NixXML_ComparePtrArrayElementFunc compare_element)
 {
     unsigned int i = 0;
 

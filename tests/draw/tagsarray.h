@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,12 +22,13 @@
 #ifndef __TAGSARRAY_H
 #define __TAGSARRAY_H
 #include <libxml/parser.h>
+#include "nixxml-types.h"
 
 void *parse_tags_array(xmlNodePtr element, void *userdata);
 
 void delete_tags_array(xmlChar **tags_array);
 
-int compare_tags_arrays(xmlChar **left, xmlChar **right);
+NixXML_bool compare_tags_arrays(xmlChar **left, xmlChar **right);
 
 void print_tags_array_nix(FILE *file, const xmlChar **tags_array, const int indent_level, void *userdata);
 

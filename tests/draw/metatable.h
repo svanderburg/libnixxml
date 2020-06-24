@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,12 +22,13 @@
 #ifndef __METATABLE_H
 #define __METATABLE_H
 #include <libxml/parser.h>
+#include "nixxml-types.h"
 
 void *parse_meta_table(xmlNodePtr element, void *userdata);
 
 void delete_meta_table(xmlHashTablePtr meta_table);
 
-int compare_meta_tables(xmlHashTablePtr left, xmlHashTablePtr right);
+NixXML_bool compare_meta_tables(xmlHashTablePtr left, xmlHashTablePtr right);
 
 void print_meta_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata);
 

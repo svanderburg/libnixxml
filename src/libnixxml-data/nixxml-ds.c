@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -49,17 +49,17 @@ void NixXML_delete_node_ds(NixXML_Node *node)
     NixXML_delete_node(node, delete_list, (NixXML_DeletePtrArrayElementFunc)delete_attrset);
 }
 
-static int compare_lists(const void **left, const void **right)
+static NixXML_bool compare_lists(const void **left, const void **right)
 {
     return NixXML_compare_ptr_arrays(left, right, (NixXML_ComparePtrArrayElementFunc)NixXML_compare_nodes_ds);
 }
 
-static int compare_attrsets(xmlHashTablePtr left, xmlHashTablePtr right)
+static NixXML_bool compare_attrsets(xmlHashTablePtr left, xmlHashTablePtr right)
 {
     return NixXML_compare_xml_hash_tables(left, right, (NixXML_CompareXMLHashTableValueFunc)NixXML_compare_nodes_ds);
 }
 
-int NixXML_compare_nodes_ds(const NixXML_Node *left, const NixXML_Node *right)
+NixXML_bool NixXML_compare_nodes_ds(const NixXML_Node *left, const NixXML_Node *right)
 {
     return NixXML_compare_nodes(left, right, (NixXML_CompareObjectFunc)compare_lists, (NixXML_CompareObjectFunc)compare_attrsets);
 }

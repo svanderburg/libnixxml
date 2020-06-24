@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -26,6 +26,7 @@
 #include "nixxml-print-nix.h"
 #include "nixxml-print-xml.h"
 #include "nixxml-generate-env.h"
+#include "nixxml-types.h"
 
 /**
  * Deletes an element from a pointer array.
@@ -115,7 +116,7 @@ void NixXML_delete_values_array(void **array);
  * @param check_element Pointer to a function that cheks the validity of an element
  * @return TRUE if all members are valid, else FALSE
  */
-int NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element);
+NixXML_bool NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element);
 
 /**
  * Compares two arrays and their content and checks whether they are equal.
@@ -123,8 +124,9 @@ int NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc c
  * @param left Pointer array to compare
  * @param right Pointer array to compare
  * @param compare_element Pointer to a function that compares elements in the arrays
+ * @return TRUE if the arrays are equal, else FALSE
  */
-int NixXML_compare_ptr_arrays(const void **left, const void **right, NixXML_ComparePtrArrayElementFunc compare_element);
+NixXML_bool NixXML_compare_ptr_arrays(const void **left, const void **right, NixXML_ComparePtrArrayElementFunc compare_element);
 
 /**
  * Prints a Nix representation of all elements in the array.

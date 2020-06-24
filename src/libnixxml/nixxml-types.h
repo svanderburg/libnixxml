@@ -19,21 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __NIXXML_PRETTY_PRINT_GLIB_H
-#define __NIXXML_PRETTY_PRINT_GLIB_H
+#ifndef __NIXXML_TYPES_H
+#define __NIXXML_TYPES_H
 
-#define NIXXMLPP_ORDER_KEYS       0x1
-#define NIXXMLPP_PARSE_XML_SIMPLE 0x2
-
-typedef enum
-{
-    FORMAT_NONE = 0,
-    FORMAT_NIX = 1,
-    FORMAT_SIMPLE_XML = 2,
-    FORMAT_VERBOSE_XML = 3
-}
-FormatType;
-
-int pretty_print_file_glib(const char *config_file, FormatType format, int indent_level, const char *root_element_name, const char *list_element_name, const char *attr_element_name, const char *name_property_name, const char *type_property_name, const unsigned int flags);
+typedef int NixXML_bool;
 
 #endif

@@ -5,10 +5,11 @@
 #include "nixxml-node.h"
 #include "nixxml-ds.h"
 #include "nixxml-generate-env.h"
+#include "nixxml-types.h"
 
 #define TRUE 1
 
-static int fork_and_check_env_variables(xmlChar **envvars)
+static NixXML_bool fork_and_check_env_variables(xmlChar **envvars)
 {
     pid_t pid;
     int wstatus;

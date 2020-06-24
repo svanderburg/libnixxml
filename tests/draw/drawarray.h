@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,15 +22,16 @@
 #ifndef __DRAWARRAY_H
 #define __DRAWARRAY_H
 #include <libxml/parser.h>
+#include "nixxml-types.h"
 #include "drawcommand.h"
 
 void *parse_draw_array(xmlNodePtr element, void *userdata);
 
 void delete_draw_array(DrawCommand **draw_array);
 
-int check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table);
+NixXML_bool check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table);
 
-int compare_draw_arrays(DrawCommand **left, DrawCommand **right);
+NixXML_bool compare_draw_arrays(DrawCommand **left, DrawCommand **right);
 
 void print_draw_array_nix(FILE *file, const DrawCommand **draw_array, const int indent_level, void *userdata);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -35,7 +35,7 @@ void delete_draw_array(DrawCommand **draw_array)
     NixXML_delete_ptr_array((void**)draw_array, (NixXML_DeletePtrArrayElementFunc)delete_draw_command);
 }
 
-int check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table)
+NixXML_bool check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table)
 {
     unsigned int i = 0;
 
@@ -50,7 +50,7 @@ int check_draw_array(DrawCommand **draw_array, xmlHashTablePtr figures_table)
     return TRUE;
 }
 
-int compare_draw_arrays(DrawCommand **left, DrawCommand **right)
+NixXML_bool compare_draw_arrays(DrawCommand **left, DrawCommand **right)
 {
     return NixXML_compare_ptr_arrays((const void **)left, (const void **)right, (NixXML_ComparePtrArrayElementFunc)compare_draw_commands);
 }

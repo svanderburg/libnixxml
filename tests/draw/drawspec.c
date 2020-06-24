@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -132,9 +132,9 @@ void delete_drawspec(DrawSpec *drawSpec)
 
 /* Check functionality */
 
-int check_drawspec(const DrawSpec *drawSpec)
+NixXML_bool check_drawspec(const DrawSpec *drawSpec)
 {
-    int status = TRUE;
+    NixXML_bool status = TRUE;
 
     if(drawSpec->dimensions == NULL)
     {
@@ -156,7 +156,7 @@ int check_drawspec(const DrawSpec *drawSpec)
 
 /* Compare functionality */
 
-int compare_drawspecs(const DrawSpec *left, const DrawSpec *right)
+NixXML_bool compare_drawspecs(const DrawSpec *left, const DrawSpec *right)
 {
     return(compare_dimensions(left->dimensions, right->dimensions)
       && compare_figures_tables(left->figures_table, right->figures_table)

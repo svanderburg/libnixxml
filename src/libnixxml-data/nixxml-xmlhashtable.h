@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -26,6 +26,7 @@
 #include "nixxml-print-nix.h"
 #include "nixxml-print-xml.h"
 #include "nixxml-generate-env.h"
+#include "nixxml-types.h"
 
 /**
  * Function that checks the validity of an element in a hash table
@@ -33,16 +34,16 @@
  * @param value Value to check
  * @return TRUE if the value is valid, else FALSE
  */
-typedef int (*NixXML_CheckXMLHashTableValueFunc) (const void *value);
+typedef NixXML_bool (*NixXML_CheckXMLHashTableValueFunc) (const void *value);
 
 /**
  * Function that compares two values with identical keys in an hash table.
  *
  * @param left Value to check
  * @param right Value to check
- * @return TRUE if the two values are identical
+ * @return TRUE if the two values are identical, else FALSE
  */
-typedef int (*NixXML_CompareXMLHashTableValueFunc) (const void *left, const void *right);
+typedef NixXML_bool (*NixXML_CompareXMLHashTableValueFunc) (const void *left, const void *right);
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +66,7 @@ void *NixXML_create_xml_hash_table_from_element(xmlNodePtr element, void *userda
  * @param check_function Function that checks the validity of each entry
  * @return TRUE if all members are valid, else FALSE
  */
-int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function);
+NixXML_bool NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashTableValueFunc check_function);
 
 /**
  * Checks whether an xmlHashTable does not refer to NULL values.
@@ -73,7 +74,7 @@ int NixXML_check_xml_hash_table(xmlHashTablePtr hash_table, NixXML_CheckXMLHashT
  * @param property_table An xmlHashTable instance
  * @return TRUE if all members are valid, else FALSE
  */
-int NixXML_check_xml_property_table(xmlHashTablePtr property_table);
+NixXML_bool NixXML_check_xml_property_table(xmlHashTablePtr property_table);
 
 /**
  * Checks whether two xmlHashTables and their content are equal.
@@ -83,7 +84,7 @@ int NixXML_check_xml_property_table(xmlHashTablePtr property_table);
  * @param compare_function Function that compares two members of a hash table with the same keys
  * @return TRUE if the hash tables have the same content, else FALSE
  */
-int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function);
+NixXML_bool NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr hash_table2, NixXML_CompareXMLHashTableValueFunc compare_function);
 
 /**
  * Checks whether two xmlHashTables with string values are equal.
@@ -92,7 +93,7 @@ int NixXML_compare_xml_hash_tables(xmlHashTablePtr hash_table1, xmlHashTablePtr 
  * @param property_table2 An xmlHashTable instance
  * @return TRUE if the hash tables have the same content, else FALSE
  */
-int NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashTablePtr property_table2);
+NixXML_bool NixXML_compare_xml_property_tables(xmlHashTablePtr property_table1, xmlHashTablePtr property_table2);
 
 /**
  * Inserts a value into an xmlHashTable

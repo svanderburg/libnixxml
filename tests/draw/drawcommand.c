@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -68,9 +68,9 @@ void delete_draw_command(DrawCommand *drawCommand)
     }
 }
 
-int check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table)
+NixXML_bool check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_table)
 {
-    int status = TRUE;
+    NixXML_bool status = TRUE;
 
     if(drawCommand->x < 0)
     {
@@ -93,7 +93,7 @@ int check_draw_command(const DrawCommand *drawCommand, xmlHashTablePtr figures_t
     return status;
 }
 
-int compare_draw_commands(const DrawCommand *left, const DrawCommand *right)
+NixXML_bool compare_draw_commands(const DrawCommand *left, const DrawCommand *right)
 {
     return((xmlStrcmp(left->figure, right->figure) == 0)
       && (left->x == right->x)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,6 +22,7 @@
 #ifndef __NIXXML_UTIL_H
 #define __NIXXML_UTIL_H
 #include <libxml/parser.h>
+#include "nixxml-types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,7 +34,7 @@ extern "C" {
  * @param value Pointer to a value
  * @return TRUE if the valid is not NULL, else FALSE
  */
-int NixXML_check_value_is_not_null(const void *value);
+NixXML_bool NixXML_check_value_is_not_null(const void *value);
 
 /**
  * Checks whether the provided strings are equal.
@@ -42,7 +43,7 @@ int NixXML_check_value_is_not_null(const void *value);
  * @param right A string value
  * @return TRUE if the strings are equal, else FALSE
  */
-int NixXML_compare_xml_strings(const xmlChar *left, const xmlChar *right);
+NixXML_bool NixXML_compare_xml_strings(const xmlChar *left, const xmlChar *right);
 
 #ifdef __cplusplus
 }

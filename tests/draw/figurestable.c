@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -48,14 +48,14 @@ static void scanner_check_figure(void *payload, void *data, const xmlChar *name)
         *status = FALSE;
 }
 
-int check_figures_table(xmlHashTablePtr figures_table)
+NixXML_bool check_figures_table(xmlHashTablePtr figures_table)
 {
     int status = TRUE;
     xmlHashScan(figures_table, scanner_check_figure, &status);
     return status;
 }
 
-int compare_figures_tables(xmlHashTablePtr left, xmlHashTablePtr right)
+NixXML_bool compare_figures_tables(xmlHashTablePtr left, xmlHashTablePtr right)
 {
     return NixXML_compare_xml_hash_tables(left, right, (NixXML_CompareXMLHashTableValueFunc)compare_figures);
 }

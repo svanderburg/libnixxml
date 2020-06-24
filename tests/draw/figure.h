@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,6 +23,7 @@
 #define __FIGURE_H
 #include <libxml/parser.h>
 #include <gd.h>
+#include "nixxml-types.h"
 
 typedef struct
 {
@@ -39,9 +40,9 @@ void *parse_figure(xmlNodePtr element, void *userdata);
 
 void delete_figure(Figure *figure);
 
-int check_figure(const Figure *figure);
+NixXML_bool check_figure(const Figure *figure);
 
-int compare_figures(const Figure *left, const Figure *right);
+NixXML_bool compare_figures(const Figure *left, const Figure *right);
 
 void print_figure_nix(FILE *file, const Figure *figure, const int indent_level, void *userdata);
 

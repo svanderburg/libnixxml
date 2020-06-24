@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,14 +23,15 @@
 #define __FIGURESTABLE_H
 #include "figure.h"
 #include <libxml/parser.h>
+#include "nixxml-types.h"
 
 void *parse_figures_table(xmlNodePtr element, void *userdata);
 
 void delete_figures_table(xmlHashTablePtr figures_table);
 
-int check_figures_table(xmlHashTablePtr figures_table);
+NixXML_bool check_figures_table(xmlHashTablePtr figures_table);
 
-int compare_figures_tables(xmlHashTablePtr left, xmlHashTablePtr right);
+NixXML_bool compare_figures_tables(xmlHashTablePtr left, xmlHashTablePtr right);
 
 void print_figures_table_nix(FILE *file, xmlHashTablePtr hash_table, const int indent_level, void *userdata);
 

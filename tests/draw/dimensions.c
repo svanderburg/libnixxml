@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -55,7 +55,7 @@ void delete_dimensions(Dimensions *dimensions)
     free(dimensions);
 }
 
-int check_dimensions(const Dimensions *dimensions)
+NixXML_bool check_dimensions(const Dimensions *dimensions)
 {
     int status = TRUE;
 
@@ -74,7 +74,7 @@ int check_dimensions(const Dimensions *dimensions)
     return status;
 }
 
-int compare_dimensions(const Dimensions *left, const Dimensions *right)
+NixXML_bool compare_dimensions(const Dimensions *left, const Dimensions *right)
 {
     return ((left->width == right->width)
       && (left->height == right->height));

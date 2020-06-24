@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Sander van der Burg
+ * Copyright (c) 2019-2020 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -37,7 +37,7 @@ void delete_meta_table(xmlHashTablePtr meta_table)
     xmlHashFree(meta_table, meta_deallocator);
 }
 
-int compare_meta_tables(xmlHashTablePtr left, xmlHashTablePtr right)
+NixXML_bool compare_meta_tables(xmlHashTablePtr left, xmlHashTablePtr right)
 {
     return NixXML_compare_xml_property_tables(left, right);
 }
