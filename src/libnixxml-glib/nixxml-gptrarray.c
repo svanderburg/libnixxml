@@ -62,7 +62,7 @@ void NixXML_delete_g_values_array(GPtrArray *array)
 NixXML_bool NixXML_check_g_ptr_array(const GPtrArray *array, NixXML_CheckGPtrArrayElementFunc check_element)
 {
     unsigned int i;
-    int status = TRUE;
+    NixXML_bool status = TRUE;
 
     for(i = 0; i < array->len; i++)
     {

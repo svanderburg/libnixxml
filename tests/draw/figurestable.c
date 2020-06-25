@@ -42,7 +42,7 @@ void delete_figures_table(xmlHashTablePtr figures_table)
 
 static void scanner_check_figure(void *payload, void *data, const xmlChar *name)
 {
-    int *status = (int*)data;
+    NixXML_bool *status = (NixXML_bool*)data;
 
     if(!check_figure((Figure*)payload))
         *status = FALSE;
@@ -50,7 +50,7 @@ static void scanner_check_figure(void *payload, void *data, const xmlChar *name)
 
 NixXML_bool check_figures_table(xmlHashTablePtr figures_table)
 {
-    int status = TRUE;
+    NixXML_bool status = TRUE;
     xmlHashScan(figures_table, scanner_check_figure, &status);
     return status;
 }

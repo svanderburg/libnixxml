@@ -87,7 +87,7 @@ void NixXML_delete_ptr_array(void **array, NixXML_DeletePtrArrayElementFunc dele
 NixXML_bool NixXML_check_ptr_array(const void **array, NixXML_CheckPtrArrayElementFunc check_element)
 {
     unsigned int i = 0;
-    int result = TRUE;
+    NixXML_bool result = TRUE;
 
     while(array[i] != NULL)
     {

@@ -55,7 +55,7 @@ NixXML_bool NixXML_check_g_hash_table(GHashTable *hash_table, NixXML_CheckGHashT
 {
     GHashTableIter iter;
     gpointer key, value;
-    int status = TRUE;
+    NixXML_bool status = TRUE;
 
     g_hash_table_iter_init(&iter, hash_table);
     while(g_hash_table_iter_next(&iter, &key, &value))

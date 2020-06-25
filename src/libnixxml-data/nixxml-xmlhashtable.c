@@ -35,7 +35,7 @@ void *NixXML_create_xml_hash_table_from_element(xmlNodePtr element, void *userda
 
 typedef struct
 {
-    int result;
+    NixXML_bool result;
     NixXML_CheckXMLHashTableValueFunc check_function;
 }
 CheckParams;
@@ -64,7 +64,7 @@ NixXML_bool NixXML_check_xml_property_table(xmlHashTablePtr property_table)
 
 typedef struct
 {
-    int result;
+    NixXML_bool result;
     xmlHashTablePtr hash_table2;
     NixXML_CompareXMLHashTableValueFunc compare_function;
 }

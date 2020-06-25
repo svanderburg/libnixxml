@@ -57,7 +57,7 @@ void delete_dimensions(Dimensions *dimensions)
 
 NixXML_bool check_dimensions(const Dimensions *dimensions)
 {
-    int status = TRUE;
+    NixXML_bool status = TRUE;
 
     if(dimensions->width <= 0)
     {
