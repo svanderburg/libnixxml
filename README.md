@@ -50,9 +50,11 @@ Installation
 Installation of `libnixxml` is very straight forward by running the standard
 Autotools build procedure:
 
-    $ ./configure
-    $ make
-    $ make install
+```bash
+$ ./configure
+$ make
+$ make install
+```
 
 GLib integration can be enabled by passing the `--with-glib` parameter to the
 configure script.
@@ -712,14 +714,14 @@ The `nixxml-pp` tool can be used to open any type annotated `NixXML` file and
 pretty print its structure in Nix or XML (using simple or verbose attribute
 style notation).
 
-The following command prints a Nix representation of a data structure in
-`NixXML` format:
+The following command prints a Nix representation of a data structure as a
+Nix expression:
 
 ```bash
 $ nixxml-pp -f nix test-ast.nix
 ```
 
-we can also use verbose XML format:
+we can also use the verbose XML format:
 
 ```bash
 $ nixxml-pp -f xml test-ast.nix
@@ -747,6 +749,6 @@ $ nixxml-pp -f xml \
 License
 =======
 This package is [MIT licensed](https://opensource.org/licenses/MIT). The
-`libnixxml-glib` sub library (when enabled) is convered by the
+`libnixxml-glib` sub library (when enabled) is covered by the
 [LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html) or
-higher.
+later.
