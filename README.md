@@ -59,6 +59,13 @@ $ make install
 GLib integration can be enabled by passing the `--with-glib` parameter to the
 configure script.
 
+When building from the Git repository, you should run the bootstrap script
+first:
+
+```bash
+$ ./bootstrap
+```
+
 Background
 ==========
 The Nix expression language is used as a configuration language for various
