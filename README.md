@@ -45,8 +45,8 @@ need:
 
 * [GLib](https://developer.gnome.org/glib)
 
-Installation
-============
+Installation from source
+========================
 Installation of `libnixxml` is very straight forward by running the standard
 Autotools build procedure:
 
@@ -65,6 +65,22 @@ first:
 ```bash
 $ ./bootstrap
 ```
+
+Installation with Nix
+=====================
+This package also includes a `release.nix` file that can be used to build a
+variety of package related artifacts and run tests with the Nix package manager.
+
+You can also use this expression to install the tools with Nix in the user's
+Nix profile:
+
+```bash
+$ nix-env -f release.nix -iA build.basic.x86_64-linux
+```
+
+The `basic` attribute can be replaced with `glib` to install a GLib-enabled
+version of this package. `x86_64-linux` can be replaced by any supported system
+architecture.
 
 Background
 ==========

@@ -6,8 +6,10 @@ set -o pipefail
 
 showUsage()
 {
+    me="$(basename "$0")"
+
     cat <<EOF
-Usage: $0 expr_nix [OPTION]
+Usage: $me expr_nix [OPTION]
 
 Strictly evaluates a Nix expression and converts it into a simplified XML data
 format.
@@ -81,13 +83,15 @@ nixexpr="$1"
 # Autoconf settings
 export prefix=@prefix@
 
-# Execute operation
+# Validate non-options
 
 if [ "$nixexpr" = "" ]
 then
     echo "ERROR: A Nix expression must be specified!" >&2
     exit 1
 fi
+
+# Execute operation
 
 nix-instantiate --eval-only --xml --strict "$nixexpr" | @xsltproc@ \
   $enableTypesArg \
