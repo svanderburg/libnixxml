@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Util module
+ * @defgroup Util
+ * @{
+ */
+
 #ifndef __NIXXML_UTIL_H
 #define __NIXXML_UTIL_H
 #include <libxml/parser.h>
@@ -50,3 +57,7 @@ NixXML_bool NixXML_compare_xml_strings(const xmlChar *left, const xmlChar *right
 #endif
 
 #endif
+
+/**
+ * @}
+ */

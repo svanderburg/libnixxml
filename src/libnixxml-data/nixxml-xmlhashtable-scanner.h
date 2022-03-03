@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Data-XmlHashTable-Scanner module
+ * @defgroup Data-XmlHashTable-Scanner
+ * @{
+ */
+
 #ifndef __NIXXML_XMLHASHTABLE_SCANNER_H
 #define __NIXXML_XMLHASHTABLE_SCANNER_H
 #include <libxml/parser.h>
@@ -42,3 +49,7 @@ void NixXML_xmlHashScanOrdered(xmlHashTablePtr hash_table, xmlHashScanner scanne
 #endif
 
 #endif
+
+/**
+ * @}
+ */

@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief ParseGeneric module
+ * @defgroup ParseGeneric
+ * @{
+ */
+
 #ifndef __NIXXML_PARSE_GENERIC_H
 #define __NIXXML_PARSE_GENERIC_H
 
@@ -190,3 +197,7 @@ NixXML_Node *NixXML_generic_parse_verbose_expr(xmlNodePtr element, const char *t
 #endif
 
 #endif
+
+/**
+ * @}
+ */

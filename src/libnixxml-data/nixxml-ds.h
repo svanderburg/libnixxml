@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Data-DS module
+ * @defgroup Data-DS
+ * @{
+ */
+
 #ifndef __NIXXML_DS_H
 #define __NIXXML_DS_H
 
@@ -174,3 +181,7 @@ xmlChar **NixXML_generate_env_vars_generic_ds(xmlHashTablePtr hash_table);
 #endif
 
 #endif
+
+/**
+ * @}
+ */

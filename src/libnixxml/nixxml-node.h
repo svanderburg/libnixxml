@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Node module
+ * @defgroup Node
+ * @{
+ */
+
 #ifndef __NIXXML_NODE_H
 #define __NIXXML_NODE_H
 #include "nixxml-types.h"
@@ -96,3 +103,7 @@ NixXML_bool NixXML_compare_nodes(const NixXML_Node *left, const NixXML_Node *rig
 #endif
 
 #endif
+
+/**
+ * @}
+ */

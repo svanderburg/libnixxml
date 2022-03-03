@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief PrintXML module
+ * @defgroup PrintXML
+ * @{
+ */
+
 #ifndef __NIXXML_PRINT_XML_H
 #define __NIXXML_PRINT_XML_H
 #include <stdio.h>
@@ -262,3 +269,7 @@ void NixXML_print_verbose_attrset_xml(FILE *file, const void *table, const char 
 #endif
 
 #endif
+
+/**
+ * @}
+ */

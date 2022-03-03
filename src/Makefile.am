@@ -8,7 +8,4 @@ SUBDIRS = libnixxml libnixxml-data nixxml-pp $(libnixxml_glib)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnixxml.pc libnixxml-data.pc $(libnixxml_glib_pc)
 
-apidox:
-	doxygen Doxyfile
-
 EXTRA_DIST = libnixxml.pc.in libnixxml-data.pc.in libnixxml-glib.pc.in

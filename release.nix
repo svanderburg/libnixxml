@@ -21,7 +21,7 @@ let
         configureFlags = [ "--with-glib" ];
 
         preDist = ''
-          make -C src apidox
+          make apidox
           mkdir -p $out/share/doc/libnixxml
           cp -av apidox $out/share/doc/libnixxml
           echo "doc api $out/share/doc/libnixxml/apidox/html" >> $out/nix-support/hydra-build-products

@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief GenerateEnv module
+ * @defgroup GenerateEnv
+ * @{
+ */
+
 #ifndef __NIXXML_GENERATE_ENV_H
 #define __NIXXML_GENERATE_ENV_H
 
@@ -114,3 +121,7 @@ void NixXML_delete_env_variable_array(xmlChar **array);
 #endif
 
 #endif
+
+/**
+ * @}
+ */

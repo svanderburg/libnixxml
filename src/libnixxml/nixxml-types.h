@@ -19,9 +19,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Types module
+ * @defgroup Types
+ * @{
+ */
+
 #ifndef __NIXXML_TYPES_H
 #define __NIXXML_TYPES_H
 
+/** Type alias for a boolean to improve readability */
 typedef int NixXML_bool;
 
 #endif
+
+/**
+ * @}
+ */

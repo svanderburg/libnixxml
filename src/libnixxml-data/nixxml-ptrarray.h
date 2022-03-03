@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Data-PtrArray module
+ * @defgroup Data-PtrArray
+ * @{
+ */
+
 #ifndef __NIXXML_PTRARRAY_H
 #define __NIXXML_PTRARRAY_H
 #include <libxml/parser.h>
@@ -202,3 +209,7 @@ xmlChar *NixXML_generate_env_value_from_ptr_array(const void *value, void *userd
 #endif
 
 #endif
+
+/**
+ * @}
+ */

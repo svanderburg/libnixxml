@@ -478,7 +478,9 @@ In addition to printing values and attribute sets, it is also possible to:
   `NixXML_print_list_xml()`
 * Print attribute sets in simple XML notation:
   `NixXML_print_simple_attrset_xml()`
-* Print strings as `int`, `float` or `bool`: `NixXML_print_string_as_*_xml`.
+* Print strings as `int`: `NixXML_print_string_as_int_xml()`, `float`:
+  `NixXML_print_string_as_float_xml()` or `bool`:
+  `NixXML_print_string_as_bool_xml()`.
 * Print integers: `NixXML_print_int_xml()`
 * Disable indentation by setting the `indent_level` parameter to `-1`.
 * Print type annotated XML, by setting the `type_property_name` parameter to
@@ -560,7 +562,7 @@ parse an *entire* document by using a single function call:
 
 xmlNodePtr element;
 /* Open XML file and obtain root element */
-NixXML_Node *node = NixXML_generic_parse_verbose_expr(element, "type", "name", NixXML_create_ptr_array, NixXML_create_xml_hash_table, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
+NixXML_Node *node = NixXML_generic_parse_verbose_expr(element, "type", "name", NixXML_create_ptr_array, NixXML_create_xml_hash_table_from_element, NixXML_add_value_to_ptr_array, NixXML_insert_into_xml_hash_table, NixXML_finalize_ptr_array);
 ```
 
 The above function composes a generic `NixXML_Node` object by parsing

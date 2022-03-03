@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief PrintGenericNix module
+ * @defgroup PrintGenericNix
+ * @{
+ */
+
 #ifndef __NIXXML_PRINT_GENERIC_NIX_H
 #define __NIXXML_PRINT_GENERIC_NIX_H
 #include <stdio.h>
@@ -70,3 +77,7 @@ void NixXML_print_generic_expr_nix(FILE *file, const NixXML_Node *value, const i
 #endif
 
 #endif
+
+/**
+ * @}
+ */

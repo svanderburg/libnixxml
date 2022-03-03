@@ -17,6 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * @file
+ * @brief GLib-GHashTableIter module
+ * @defgroup GLib-GHashTableIter
+ * @{
+ */
+
 #ifndef __NIXXML_GHASHTABLE_ITER_H
 #define __NIXXML_GHASHTABLE_ITER_H
 
@@ -73,3 +80,7 @@ void NixXML_g_hash_table_ordered_iter_destroy(NixXML_GHashTableOrderedIter *iter
 #endif
 
 #endif
+
+/**
+ * @}
+ */

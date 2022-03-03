@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief PrintNix module
+ * @defgroup PrintNix
+ * @{
+ */
+
 #ifndef __NIXXML_PRINT_NIX_H
 #define __NIXXML_PRINT_NIX_H
 #include <stdio.h>
@@ -151,3 +158,7 @@ void NixXML_print_attrset_nix(FILE *file, const void *table, const int indent_le
 #endif
 
 #endif
+
+/**
+ * @}
+ */

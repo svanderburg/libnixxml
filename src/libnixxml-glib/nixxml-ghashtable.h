@@ -17,6 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * @file
+ * @brief GLib-GHashTable module
+ * @defgroup GLib-GHashTable
+ * @{
+ */
+
 #ifndef __NIXXML_GHASHTABLE_H
 #define __NIXXML_GHASHTABLE_H
 #include <glib.h>
@@ -331,3 +338,7 @@ xmlChar **NixXML_generate_env_vars_from_g_hash_table(GHashTable *hash_table, voi
 #endif
 
 #endif
+
+/**
+ * @}
+ */

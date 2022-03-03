@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Print module
+ * @defgroup Print
+ * @{
+ */
+
 #ifndef __NIXXML_PRINT_H
 #define __NIXXML_PRINT_H
 
@@ -41,3 +48,7 @@ void NixXML_print_indentation(FILE *file, const int indent_level);
 #endif
 
 #endif
+
+/**
+ * @}
+ */

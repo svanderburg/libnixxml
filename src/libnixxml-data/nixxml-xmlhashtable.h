@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Data-XmlHashTable module
+ * @defgroup Data-XmlHashTable
+ * @{
+ */
+
 #ifndef __NIXXML_XMLHASHTABLE_H
 #define __NIXXML_XMLHASHTABLE_H
 #include <libxml/parser.h>
@@ -304,3 +311,7 @@ xmlChar **NixXML_generate_env_vars_from_xml_hash_table(xmlHashTablePtr hash_tabl
 #endif
 
 #endif
+
+/**
+ * @}
+ */

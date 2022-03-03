@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief PrintGenericXML module
+ * @defgroup PrintGenericXML
+ * @{
+ */
+
 #ifndef __NIXXML_PRINT_GENERIC_XML_H
 #define __NIXXML_PRINT_GENERIC_XML_H
 #include <stdio.h>
@@ -124,3 +131,7 @@ void NixXML_print_generic_expr_verbose_xml(FILE *file, const NixXML_Node *value,
 #endif
 
 #endif
+
+/**
+ * @}
+ */

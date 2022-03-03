@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief Parse module
+ * @defgroup Parse
+ * @{
+ */
+
 #ifndef __NIXXML_PARSE_H
 #define __NIXXML_PARSE_H
 
@@ -193,3 +200,7 @@ void *NixXML_parse_verbose_attrset(xmlNodePtr element, const char *child_element
 #endif
 
 #endif
+
+/**
+ * @}
+ */

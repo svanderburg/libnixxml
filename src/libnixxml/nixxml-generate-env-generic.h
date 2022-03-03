@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief GenerateEnvGeneric module
+ * @defgroup GenerateEnvGeneric
+ * @{
+ */
+
 #ifndef __NIXXML_GENERATE_ENV_GENERIC_H
 #define __NIXXML_GENERATE_ENV_GENERIC_H
 
@@ -66,3 +73,7 @@ xmlChar *NixXML_generate_env_generic(const NixXML_Node *node, NixXML_GenerateLis
 #endif
 
 #endif
+
+/**
+ * @}
+ */

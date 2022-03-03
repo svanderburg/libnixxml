@@ -19,6 +19,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file
+ * @brief GLib-Glib module
+ * @defgroup GLib-Glib
+ * @{
+ */
+
 #ifndef __NIXXML_GLIB_H
 #define __NIXXML_GLIB_H
 #include <libxml/parser.h>
@@ -175,3 +182,7 @@ xmlChar **NixXML_generate_env_vars_generic_glib(GHashTable *hash_table);
 #endif
 
 #endif
+
+/**
+ * @}
+ */

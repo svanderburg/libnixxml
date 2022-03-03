@@ -17,6 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * @file
+ * @brief GLib-GPtrArray module
+ * @defgroup GLib-GPtrArray
+ * @{
+ */
+
 #ifndef __NIXXML_GPTRARRAY_H
 #define __NIXXML_GPTRARRAY_H
 #include <libxml/parser.h>
@@ -191,3 +198,7 @@ xmlChar *NixXML_generate_env_value_from_g_ptrarray(const void *value, void *user
 #endif
 
 #endif
+
+/**
+ * @}
+ */
